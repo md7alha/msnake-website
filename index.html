@@ -64,20 +64,20 @@
     .feature-card h3 { font-size: 1.25rem; font-weight: 800; margin-bottom: 8px; }
     .feature-card p { color: var(--text-muted); font-size: 0.95rem; }
 
-    .privacy-document { max-width: 880px; margin: 0 auto; background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 45px 36px; line-height: 1.7; }
-    .privacy-document h1 { font-size: 2.2rem; color: var(--primary); margin-bottom: 10px; }
-    .privacy-document h2 { font-size: 1.3rem; margin: 26px 0 10px; color: #fff; }
-    .privacy-document p, .privacy-document li { color: var(--text-muted); margin-bottom: 12px; font-size: 0.96rem; }
-    .privacy-document ul { padding-left: 24px; }
+    .policy-banner { max-width: 880px; margin: 0 auto; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 36px 30px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+    .policy-banner h3 { font-size: 1.4rem; font-weight: 800; }
+    .policy-banner p { color: var(--text-muted); font-size: 0.98rem; max-width: 600px; }
 
     footer { border-top: 1px solid var(--border); padding: 36px 24px; text-align: center; color: var(--text-muted); font-size: 0.9rem; }
+    footer a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+    footer a:hover { color: var(--primary); }
     @media (max-width: 900px) { .hero-container { grid-template-columns: 1fr; gap: 36px; padding: 30px 18px; } }
   </style>
 </head>
 <body>
   <header>
     <nav>
-      <a href="#" class="brand">
+      <a href="index.html" class="brand">
         <div class="brand-icon">
           <svg viewBox="0 0 100 100" width="22" height="22">
             <rect x="15" y="15" width="20" height="20" rx="5" fill="#39ff14"/>
@@ -94,9 +94,9 @@
         mSnake <span>.shop</span>
       </a>
       <div class="nav-links">
-        <a href="#" class="nav-link">Home</a>
+        <a href="index.html" class="nav-link">Home</a>
         <a href="#features" class="nav-link">Features</a>
-        <a href="#privacy" class="nav-link">Privacy Policy</a>
+        <a href="privacypolicy.html" class="nav-link">Privacy Policy</a>
       </div>
     </nav>
   </header>
@@ -109,7 +109,7 @@
         <p class="hero-text">Experience classic 2D Snake transformed into high-stakes arena duels. Powered by mathematical procedural shaders, zero-latency touch prediction, and real-time multiplayer.</p>
         <div class="cta-row">
           <a href="https://play.google.com/store/apps/details?id=com.md7.msnake" target="_blank" class="btn-playstore">Download on Google Play</a>
-          <a href="#privacy" class="btn-sub">Privacy Policy</a>
+          <a href="privacypolicy.html" class="btn-sub">Privacy Policy</a>
         </div>
       </div>
       
@@ -120,7 +120,7 @@
         </div>
         <canvas id="gameCanvas" width="360" height="480"></canvas>
         
-        <div class="controls-label">Arena Backdrops (Mainactivity)</div>
+        <div class="controls-label">Arena Backdrops</div>
         <div class="tag-row">
           <button class="arena-btn active" onclick="setArena('VOID')">Void</button>
           <button class="arena-btn" onclick="setArena('BLACK_HOLE')">Black Hole</button>
@@ -166,39 +166,17 @@
       </div>
     </section>
 
-    <section class="section-wrap" id="privacy">
-      <div class="privacy-document">
-        <h1>Privacy Policy for mSnake</h1>
-        <p><strong>Effective Date:</strong> September 2026</p>
-        <p>This privacy policy governs your use of the software application <strong>mSnake</strong> ("Application") for mobile devices, created and published by <strong>Md7</strong>.</p>
-        
-        <h2>1. What Information Does the Application Obtain?</h2>
-        <p><strong>User Provided Information:</strong> The Application does not require registration or personal details like your legal name, physical address, or phone number.</p>
-        <p><strong>Automatically Collected Information:</strong> The Application may collect certain non-identifying technical data automatically, including the type of mobile device you use, device unique ID, operating system version, and anonymous diagnostic logs to improve performance.</p>
-
-        <h2>2. In-Game Progress & Multiplayer</h2>
-        <p>Single-player records, unlocked arena themes, and cosmetic skins are saved locally on your mobile device or synchronized securely using Google Play Games Services.</p>
-        <p>During multiplayer matches, transient inputs and room tokens are processed in real-time memory across our secure network to deliver smooth peer-to-peer gameplay. No match histories or duel recordings are permanently indexed or shared with third parties.</p>
-
-        <h2>3. Third-Party Partners & AdMob</h2>
-        <p>We work with trusted third-party service providers:</p>
-        <ul>
-          <li><strong>Google Play Services:</strong> Cloud leaderboard rankings, achievements, and player authentication.</li>
-          <li><strong>Google AdMob:</strong> Serves non-intrusive banner, interstitial, and rewarded continue advertisements compliant with Google's Play Family and Developer policies.</li>
-        </ul>
-
-        <h2>4. Data Retention & Account Deletion</h2>
-        <p>Because we do not store personal profiles on private servers, you have complete sovereignty over your data. You can erase all game records and high scores instantly at any time by clearing the Application's storage via your Android device settings.</p>
-
-        <h2>5. Developer Support</h2>
-        <p>If you have any questions regarding privacy while using the Application, contact our support team:</p>
-        <p><strong>Email:</strong> support@msnake.shop</p>
+    <section class="section-wrap" style="padding-top: 0;">
+      <div class="policy-banner">
+        <h3>User Privacy & Data Protection</h3>
+        <p>mSnake operates with a transparent, privacy-first architecture. All game progress is held on-device or synced via official Google Play Services.</p>
+        <a href="privacypolicy.html" class="btn-sub" style="border-color: var(--primary); color: var(--primary);">Read Full Privacy Policy &rarr;</a>
       </div>
     </section>
   </main>
 
   <footer>
-    <p>&copy; 2026 mSnake • Developed by Md7 • All Rights Reserved</p>
+    <p>&copy; 2026 mSnake • Developed by Md7 • <a href="privacypolicy.html">Privacy Policy</a></p>
   </footer>
 
   <script>
@@ -236,7 +214,6 @@
       });
     }
 
-    // --- ARENA BACKDROP SHADERS ---
     function drawArena(p) {
       const pi2 = Math.PI * 2;
       const ph = ((p % pi2) + pi2) % pi2;
@@ -340,23 +317,18 @@
         }
       }
 
-      // Arena Outer Frame
       ctx.strokeStyle = currentTheme === 'MATRIX' ? 'rgba(57, 255, 20, 0.4)' : 'rgba(0, 245, 255, 0.3)';
       ctx.lineWidth = 2.5; ctx.strokeRect(2, 2, W - 4, H - 4);
     }
 
-    // --- PROCEDURAL FOOD SYSTEM ---
     function drawFoods(p) {
       const pulse = 1.0 + 0.08 * Math.sin(p * 4);
-
-      // Regular Food
       const fRad = Math.min(cellW, cellH) * 0.32 * pulse;
       const fx = (food.x + 0.5) * cellW, fy = (food.y + 0.5) * cellH;
       ctx.fillStyle = 'rgba(255, 23, 68, 0.25)'; ctx.beginPath(); ctx.arc(fx, fy, fRad * 2.2, 0, Math.PI * 2); ctx.fill();
       ctx.fillStyle = '#ff1744'; ctx.beginPath(); ctx.arc(fx, fy, fRad, 0, Math.PI * 2); ctx.fill();
       ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(fx - fRad * 0.3, fy - fRad * 0.3, fRad * 0.28, 0, Math.PI * 2); ctx.fill();
 
-      // Special Food (+100 Magenta Diamond)
       const sRad = Math.min(cellW, cellH) * 0.38 * pulse;
       const sx = (specialFood.x + 0.5) * cellW, sy = (specialFood.y + 0.5) * cellH;
       ctx.fillStyle = 'rgba(255, 0, 255, 0.25)'; ctx.beginPath(); ctx.arc(sx, sy, sRad * 2.2, 0, Math.PI * 2); ctx.fill();
@@ -364,7 +336,6 @@
       ctx.beginPath(); ctx.moveTo(sx, sy - sRad); ctx.lineTo(sx + sRad, sy); ctx.lineTo(sx, sy + sRad); ctx.lineTo(sx - sRad, sy); ctx.closePath(); ctx.fill();
       ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(sx, sy, sRad * 0.3, 0, Math.PI * 2); ctx.fill();
 
-      // Shrink Food (Cyan Shrink Pill)
       const shRad = Math.min(cellW, cellH) * 0.34 * pulse;
       const shx = (shrinkFood.x + 0.5) * cellW, shy = (shrinkFood.y + 0.5) * cellH;
       ctx.fillStyle = 'rgba(0, 229, 255, 0.2)'; ctx.beginPath(); ctx.arc(shx, shy, shRad * 2.2, 0, Math.PI * 2); ctx.fill();
@@ -373,7 +344,6 @@
       ctx.beginPath(); ctx.moveTo(shx - shRad * 0.4, shy); ctx.lineTo(shx + shRad * 0.4, shy); ctx.stroke();
     }
 
-    // --- PROCEDURAL SNAKE LOADS ---
     function drawSnake(p) {
       const radius = Math.min(cellW, cellH) * 0.44;
       const centers = snake.map(s => ({ x: (s.x + 0.5) * cellW, y: (s.y + 0.5) * cellH }));
@@ -395,7 +365,6 @@
         }
       }
       else if (currentStyle === 'SKELETON') {
-        // Spine & Ribs
         for (let i = 1; i < centers.length; i++) {
           const p0 = centers[i - 1], p1 = centers[i];
           const dx = p1.x - p0.x, dy = p1.y - p0.y;
@@ -411,12 +380,10 @@
 
           ctx.fillStyle = '#faf7ee'; ctx.beginPath(); ctx.arc(p1.x, p1.y, radius * 0.18, 0, Math.PI * 2); ctx.fill();
         }
-        // Continuous spine cord
         ctx.strokeStyle = '#faf7ee'; ctx.lineWidth = radius * 0.25; ctx.beginPath();
         centers.forEach((pt, i) => { if (i === 0) ctx.moveTo(pt.x, pt.y); else ctx.lineTo(pt.x, pt.y); });
         ctx.stroke();
 
-        // Anatomical Skull
         const head = centers[0];
         ctx.fillStyle = '#faf7ee';
         ctx.beginPath(); ctx.roundRect(head.x - radius*0.8, head.y - radius*1.1, radius*1.6, radius*2.1, 8); ctx.fill();
@@ -425,7 +392,6 @@
         ctx.beginPath(); ctx.arc(head.x + radius*0.35, head.y - radius*0.2, radius*0.24, 0, Math.PI*2); ctx.fill();
       }
       else if (currentStyle === 'PLASMA') {
-        // High voltage electric discharge arcs
         ctx.strokeStyle = '#00f5ff'; ctx.lineWidth = 3;
         for (let i = 0; i < centers.length - 1; i++) {
           const p1 = centers[i], p2 = centers[i+1];
@@ -458,12 +424,10 @@
       }
     }
 
-    // --- GAME PREVIEW LOOP ---
     function loop() {
       phase = (phase + 0.035) % (Math.PI * 2);
       tickCount++;
 
-      // Autonomous Game AI Step
       if (tickCount % 10 === 0) {
         let head = snake[0];
         let target = food;
