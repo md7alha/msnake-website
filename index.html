@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mSnake - The Ultimate 2D Competitive Snake Arena</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='25' fill='%23000'/><rect x='10' y='10' width='80' height='80' rx='20' fill='none' stroke='%23a6ff00' stroke-width='6'/><path d='M30 30h40v20H30v20h40' fill='none' stroke='%23a6ff00' stroke-width='10' stroke-linecap='round'/><rect x='70' y='65' width='12' height='12' rx='3' fill='%23ff0055'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #06070a;
+      --surface: #0e1017;
+      --card-bg: rgba(255, 255, 255, 0.035);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-glow: rgba(166, 255, 0, 0.4);
+      --primary: #a6ff00;
+      --primary-glow: rgba(166, 255, 0, 0.25);
+      --cyan: #00e5ff;
+      --accent-red: #ff1744;
+      --text: #f3f5fa;
+      --text-muted: #8b92a5;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background-color: var(--bg); color: var(--text); overflow-x: hidden; line-height: 1.6; }
+    header { position: sticky; top: 0; z-index: 100; backdrop-filter: blur(20px); background: rgba(6, 7, 10, 0.82); border-bottom: 1px solid var(--border); }
+    nav { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; }
+    .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: #fff; font-size: 1.4rem; font-weight: 900; }
+    .brand-icon { width: 36px; height: 36px; border-radius: 10px; background: #000; border: 2px solid var(--primary); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 12px var(--primary-glow); }
+    .brand-icon svg { width: 22px; height: 22px; }
+    .brand span { color: var(--primary); }
+    .nav-links { display: flex; gap: 20px; align-items: center; }
+    .nav-link { background: none; border: none; color: var(--text-muted); font-size: 0.95rem; font-weight: 700; cursor: pointer; text-decoration: none; transition: color 0.2s; }
+    .nav-link:hover { color: var(--primary); }
+    .hero-container { max-width: 1200px; margin: 0 auto; padding: 60px 24px 80px; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 50px; align-items: center; }
+    .pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: 30px; background: rgba(166, 255, 0, 0.08); border: 1px solid var(--border-glow); color: var(--primary); font-size: 0.8rem; font-weight: 800; letter-spacing: 0.8px; margin-bottom: 24px; }
+    .pill .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 8px var(--primary); }
+    h1 { font-size: clamp(2.6rem, 5.2vw, 4rem); font-weight: 900; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 20px; }
+    h1 span { background: linear-gradient(135deg, var(--primary), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero-text { color: var(--text-muted); font-size: 1.15rem; margin-bottom: 36px; max-width: 540px; }
+    .cta-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+    .btn-playstore { display: inline-flex; align-items: center; gap: 12px; background: #fff; color: #000; text-decoration: none; padding: 14px 28px; border-radius: 14px; font-weight: 800; font-size: 1rem; transition: transform 0.2s, box-shadow 0.2s; }
+    .btn-playstore:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(255, 255, 255, 0.2); }
+    .btn-sub { display: inline-flex; align-items: center; gap: 8px; background: var(--card-bg); border: 1px solid var(--border); color: #fff; padding: 14px 24px; border-radius: 14px; text-decoration: none; font-weight: 700; font-size: 0.95rem; cursor: pointer; }
+    .btn-sub:hover { border-color: var(--primary); color: var(--primary); }
+    .arena-frame { background: linear-gradient(180deg, #13151f, #07080b); border: 1px solid var(--border); border-radius: 28px; padding: 20px; box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6); }
+    .arena-topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; font-size: 0.8rem; font-weight: 800; color: var(--text-muted); letter-spacing: 1px; }
+    #liveCanvas { width: 100%; aspect-ratio: 18 / 24; background: #000; border: 2px solid var(--border-glow); border-radius: 18px; display: block; }
+    .arena-controls { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; justify-content: center; }
+    .tag-btn { background: var(--card-bg); border: 1px solid var(--border); color: var(--text-muted); padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+    .tag-btn:hover, .tag-btn.active { background: var(--primary-glow); border-color: var(--primary); color: #fff; }
+    .section-wrap { max-width: 1200px; margin: 0 auto; padding: 80px 24px; }
+    .section-title { text-align: center; margin-bottom: 50px; }
+    .section-title h2 { font-size: 2.4rem; font-weight: 900; margin-bottom: 12px; }
+    .section-title p { color: var(--text-muted); font-size: 1.1rem; }
+    .grid-features { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+    .feature-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; padding: 36px 28px; transition: transform 0.25s, border-color 0.25s; }
+    .feature-card:hover { transform: translateY(-5px); border-color: var(--border-glow); }
+    .f-icon { font-size: 2rem; width: 60px; height: 60px; border-radius: 16px; background: rgba(166, 255, 0, 0.08); border: 1px solid var(--border-glow); display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
+    .feature-card h3 { font-size: 1.35rem; font-weight: 800; margin-bottom: 12px; }
+    .feature-card p { color: var(--text-muted); font-size: 0.95rem; }
+    .cosmetics-strip { background: var(--surface); border: 1px solid var(--border); border-radius: 28px; padding: 40px; margin-top: 40px; }
+    .badge-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .skin-tag { padding: 8px 14px; border-radius: 12px; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border); font-size: 0.85rem; font-weight: 700; }
+    .privacy-document { max-width: 860px; margin: 40px auto; padding: 50px 30px; background: var(--surface); border: 1px solid var(--border); border-radius: 28px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+    .privacy-document h1 { font-size: 2.4rem; color: var(--primary); margin-bottom: 8px; }
+    .privacy-document h2 { font-size: 1.35rem; margin: 30px 0 12px; color: #fff; }
+    .privacy-document p, .privacy-document li { color: var(--text-muted); margin-bottom: 14px; font-size: 0.98rem; }
+    .privacy-document ul { padding-left: 22px; }
+    footer { border-top: 1px solid var(--border); padding: 40px 24px; text-align: center; color: var(--text-muted); font-size: 0.9rem; }
+    @media (max-width: 900px) { .hero-container { grid-template-columns: 1fr; gap: 40px; padding: 30px 20px; } nav { padding: 14px 18px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="#" class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 100 100">
+            <rect x="15" y="15" width="20" height="20" rx="5" fill="#a6ff00"/>
+            <rect x="40" y="15" width="20" height="20" rx="5" fill="#a6ff00"/>
+            <rect x="65" y="15" width="20" height="20" rx="5" fill="#a6ff00"/>
+            <rect x="65" y="40" width="20" height="20" rx="5" fill="#a6ff00"/>
+            <rect x="40" y="40" width="20" height="20" rx="5" fill="#a6ff00"/>
+            <rect x="15" y="40" width="20" height="20" rx="5" fill="#a6ff00"/>
+            <rect x="15" y="65" width="20" height="20" rx="5" fill="#a6ff00"/>
+            <rect x="40" y="65" width="20" height="20" rx="5" fill="#a6ff00"/>
+            <rect x="65" y="65" width="20" height="20" rx="5" fill="#ff1744"/>
+          </svg>
+        </div>
+        mSnake <span>.shop</span>
+      </a>
+      <div class="nav-links">
+        <a href="#" class="nav-link">Home</a>
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#cosmetics" class="nav-link">Skins</a>
+        <a href="#privacy" class="nav-link">Privacy Policy</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <div class="hero-container">
+      <div>
+        <div class="pill"><span class="live-dot"></span> REAL-TIME MULTIPLAYER ARENA</div>
+        <h1>Swipe Fast. <span>Dominate the Arena.</span></h1>
+        <p class="hero-text">Classic single-player snake reimagined into high-stakes 1v1 competitive arena duels. Powered by client-side prediction, authentic Jetpack Compose haptics, and zero-latency input buffering.</p>
+        <div class="cta-row">
+          <a href="https://play.google.com/store/apps/details?id=com.md7.msnake" target="_blank" class="btn-playstore">Download on Google Play</a>
+          <a href="#privacy" class="btn-sub">Privacy Policy</a>
+        </div>
+      </div>
+      <div class="arena-frame">
+        <div class="arena-topbar"><span id="arenaTitle">ARENA: VOID</span><span style="color:var(--primary)">● 60 FPS LIVE</span></div>
+        <canvas id="liveCanvas" width="360" height="480"></canvas>
+        <div class="arena-controls">
+          <button class="tag-btn active" onclick="setSkin('plasma')">Plasma</button>
+          <button class="tag-btn" onclick="setSkin('skeleton')">Skeleton</button>
+          <button class="tag-btn" onclick="setSkin('classic')">Classic</button>
+          <button class="tag-btn" onclick="setHat('crown')">👑 Crown</button>
+          <button class="tag-btn" onclick="setArena('matrix')">Matrix</button>
+          <button class="tag-btn" onclick="setArena('cybercity')">Cyber City</button>
+        </div>
+      </div>
+    </div>
+
+    <section class="section-wrap" id="features">
+      <div class="section-title"><h2>Engineered for High-Level Play</h2><p>Built for mobile speed and competitive integrity.</p></div>
+      <div class="grid-features">
+        <div class="feature-card"><div class="f-icon">⚡</div><h3>Zero-Latency Swipes</h3><p>Local client prediction executes direction turns immediately upon touch, matching offline single-player responsiveness.</p></div>
+        <div class="feature-card"><div class="f-icon">🍏</div><h3>Tactical Power Foods</h3><p>Eat +10 regular food, race for 100-point Special Foods, or grab the Shrink Food to cut 5 tail segments.</p></div>
+        <div class="feature-card"><div class="f-icon">⚔️</div><h3>1v1 Private & Quick Match</h3><p>Instant lobby matchmaking with 4-letter room codes, duel rematch challenges, and built-in smart bots.</p></div>
+      </div>
+    </section>
+
+    <section class="section-wrap" id="cosmetics">
+      <div class="cosmetics-strip">
+        <h2>Deep Loadout Customization</h2>
+        <div class="badge-list">
+          <span class="skin-tag">Classic</span><span class="skin-tag">Neon</span><span class="skin-tag">Ghost</span><span class="skin-tag">Cyber</span><span class="skin-tag">Toxic</span><span class="skin-tag">Fire</span><span class="skin-tag">Aqua</span><span class="skin-tag">Shadow</span><span class="skin-tag">Crystal</span><span class="skin-tag">Smoke</span><span class="skin-tag">Prism</span><span class="skin-tag">Steel</span><span class="skin-tag">Samurai</span><span class="skin-tag">Plasma</span><span class="skin-tag">Mecha</span><span class="skin-tag">Skeleton</span><span class="skin-tag">Singularity</span><span class="skin-tag">Mummy</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-wrap" id="privacy">
+      <div class="privacy-document">
+        <h1>Privacy Policy for mSnake</h1>
+        <p><strong>Effective Date:</strong> September 2026</p>
+        <p>This privacy policy governs your use of the mobile application <strong>mSnake</strong>, developed by <strong>Md7</strong>.</p>
+        <h2>1. Information We Collect</h2>
+        <p>mSnake does not require personal information like your real name, email, or phone number. High scores and unlocks are stored locally on your device or via Google Play Games Services.</p>
+        <h2>2. Third-Party Services</h2>
+        <p>The app integrates Google Play Services for leaderboards and Google AdMob for in-game advertisements in compliance with standard policies.</p>
+        <h2>3. Contact</h2>
+        <p>Developer Support: <strong>support@msnake.shop</strong></p>
+      </div>
+    </section>
+  </main>
+
+  <footer><p>&copy; 2026 mSnake • All Rights Reserved</p></footer>
+
+  <script>
+    const canvas = document.getElementById('liveCanvas');
+    const ctx = canvas.getContext('2d');
+    const COLS = 18, ROWS = 24, CELL = canvas.width / COLS;
+    let snake = [{x:9,y:12},{x:8,y:12},{x:7,y:12}], food = {x:14,y:8}, currentSkin = 'plasma', currentHat = 'crown', arenaTheme = 'void', tick = 0;
+    function setSkin(s) { currentSkin = s; }
+    function setHat(h) { currentHat = currentHat === h ? 'none' : h; }
+    function setArena(a) { arenaTheme = a; document.getElementById('arenaTitle').innerText = 'ARENA: ' + a.toUpperCase(); }
+    function loop() {
+      tick++;
+      if (tick % 8 === 0) {
+        let h = snake[0], dir = {x:0,y:0};
+        if (h.x < food.x) dir.x = 1; else if (h.x > food.x) dir.x = -1; else if (h.y < food.y) dir.y = 1; else if (h.y > food.y) dir.y = -1;
+        let next = {x: (h.x + dir.x + COLS) % COLS, y: (h.y + dir.y + ROWS) % ROWS};
+        snake.unshift(next);
+        if (next.x === food.x && next.y === food.y) food = {x: Math.floor(Math.random() * (COLS-2)) + 1, y: Math.floor(Math.random() * (ROWS-2)) + 1};
+        else snake.pop();
+      }
+      ctx.fillStyle = arenaTheme === 'matrix' ? '#051408' : arenaTheme === 'cybercity' ? '#10071c' : '#090a10';
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle = '#ff1744'; ctx.beginPath(); ctx.arc((food.x + 0.5) * CELL, (food.y + 0.5) * CELL, CELL * 0.38, 0, Math.PI * 2); ctx.fill();
+      snake.forEach((seg, i) => {
+        ctx.fillStyle = currentSkin === 'skeleton' ? '#fff' : currentSkin === 'plasma' ? '#00e5ff' : '#a6ff00';
+        ctx.beginPath(); ctx.roundRect(seg.x * CELL + 2, seg.y * CELL + 2, CELL - 4, CELL - 4, 6); ctx.fill();
+        if (i === 0 && currentHat === 'crown') { ctx.font = '16px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('👑', (seg.x + 0.5) * CELL, (seg.y - 0.2) * CELL); }
+      });
+      requestAnimationFrame(loop);
+    }
+    loop();
+  </script>
+</body>
+</html>
