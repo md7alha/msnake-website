@@ -63,21 +63,53 @@
     .tag-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
     .arena-btn { flex: 1 1 calc(25% - 8px); background: var(--card-bg); border: 1px solid var(--border); color: var(--text-muted); padding: 7px 10px; border-radius: 9px; font-size: 0.78rem; font-weight: 700; cursor: pointer; transition: all 0.2s; font-family: 'JetBrains Mono', monospace; text-align: center; }
     .arena-btn:hover, .arena-btn.active { background: var(--primary-dim); border-color: var(--primary); color: #fff; box-shadow: 0 0 10px rgba(57, 255, 20, 0.2); }
+    .tag-row.snakes .arena-btn { flex: 1 1 calc(33.333% - 8px); }
 
     .section-wrap { max-width: 1200px; margin: 0 auto; padding: 70px 24px; }
     .section-title { text-align: center; margin-bottom: 36px; }
     .section-title h2 { font-size: 2.2rem; font-weight: 900; margin-bottom: 10px; }
     .section-title p { color: var(--text-muted); font-size: 1.05rem; }
 
-    /* 19 ANIMATED ARENAS LIVE PREVIEW GRID */
-    .arena-live-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; }
-    .arena-card { position: relative; border-radius: 14px; overflow: hidden; border: 1.5px solid var(--border); aspect-ratio: 16 / 10; cursor: pointer; transition: transform 0.22s, border-color 0.22s, box-shadow 0.22s; background: #000; }
-    .arena-card:hover { transform: translateY(-4px); border-color: var(--cyan); box-shadow: 0 10px 22px rgba(0, 245, 255, 0.18); }
-    .arena-card.active { border-color: var(--primary); box-shadow: 0 0 18px var(--primary-dim); }
+    /* 19 ANIMATED ARENAS LIVE PREVIEW GRID (SMOOTH CORNERED, NON-CLICKABLE CARDS) */
+    .arena-live-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; }
+    .arena-card { 
+      position: relative; 
+      border-radius: 16px; 
+      overflow: hidden; 
+      border: 1px solid var(--border); 
+      aspect-ratio: 16 / 10; 
+      cursor: default; 
+      user-select: none;
+      background: #000; 
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
     .arena-card canvas { width: 100%; height: 100%; display: block; }
-    .arena-card-overlay { position: absolute; inset: 0; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; padding: 10px 12px; background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, transparent 40%, rgba(0,0,0,0.85) 100%); }
-    .card-live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--primary); align-self: flex-end; box-shadow: 0 0 6px var(--primary); }
-    .card-name { font-size: 0.82rem; font-weight: 800; color: #fff; font-family: 'JetBrains Mono', monospace; text-shadow: 0 2px 5px rgba(0,0,0,0.9); }
+    .arena-card-overlay { 
+      position: absolute; 
+      inset: 0; 
+      pointer-events: none; 
+      display: flex; 
+      flex-direction: column; 
+      justify-content: space-between; 
+      padding: 10px 12px; 
+      background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, transparent 45%, rgba(0,0,0,0.85) 100%); 
+    }
+    .card-live-dot { 
+      width: 6px; 
+      height: 6px; 
+      border-radius: 50%; 
+      background: var(--primary); 
+      align-self: flex-end; 
+      box-shadow: 0 0 6px var(--primary); 
+    }
+    .card-name { 
+      font-size: 0.8rem; 
+      font-weight: 800; 
+      color: #fff; 
+      font-family: 'JetBrains Mono', monospace; 
+      text-shadow: 0 2px 5px rgba(0,0,0,0.9); 
+      letter-spacing: 0.3px;
+    }
 
     .stat-strip { display: flex; flex-wrap: wrap; justify-content: center; gap: 0; max-width: 900px; margin: 0 auto 10px; border: 1px solid var(--border); border-radius: 18px; overflow: hidden; }
     .stat-cell { flex: 1 1 160px; padding: 20px 14px; text-align: center; border-right: 1px solid var(--border); }
@@ -124,8 +156,8 @@
       .hero-container { grid-template-columns: 1fr; gap: 36px; padding: 30px 18px; }
       .two-col { grid-template-columns: 1fr; }
       .stat-cell { border-right: none; border-bottom: 1px solid var(--border); }
-      .tag-row { gap: 6px; }
-      .arena-btn { flex: 1 1 calc(50% - 6px); }
+      .arena-btn { flex: 1 1 calc(50% - 8px); }
+      .tag-row.snakes .arena-btn { flex: 1 1 calc(33.333% - 8px); }
     }
   </style>
 </head>
@@ -170,7 +202,7 @@
         </div>
       </div>
       
-      <!-- REALISTIC CALM & SMOOTH LIVE GAMEPLAY -->
+      <!-- REALISTIC SMOOTH LIVE GAMEPLAY -->
       <div class="arena-viewport">
         <div class="arena-header">
           <span id="labelTheme">ARENA: VOID</span>
@@ -185,27 +217,26 @@
           <div class="canvas-scanline"></div>
         </div>
         
-        <!-- 4 ARENAS IN RIGHT SIDE -->
+        <!-- ONLY 4 ARENAS ON TOP-RIGHT PREVIEW -->
         <div class="controls-label">
           <span>Active Arena Backdrop</span>
           <span style="color:var(--primary); font-size:0.65rem;">LIVE SIMULATION</span>
         </div>
         <div class="tag-row" id="arenaButtons">
           <button class="arena-btn active" onclick="setArena('VOID', this)">Void</button>
-          <button class="arena-btn" onclick="setArena('BLACK_HOLE', this)">Black Hole</button>
           <button class="arena-btn" onclick="setArena('CYBERCITY', this)">Cyber City</button>
-          <button class="arena-btn" onclick="setArena('MAGMA', this)">Magma</button>
+          <button class="arena-btn" onclick="setArena('STORM', this)">Storm</button>
+          <button class="arena-btn" onclick="setArena('ABYSS', this)">Abyss</button>
         </div>
 
-        <!-- 4 SNAKE SKINS IN RIGHT SIDE -->
+        <!-- ONLY 3 SNAKES ON TOP-RIGHT PREVIEW -->
         <div class="controls-label">
           <span>Active Snake Skin</span>
           <span style="color:var(--cyan); font-size:0.65rem;">INTERACTIVE PREVIEW</span>
         </div>
-        <div class="tag-row" id="styleButtons">
+        <div class="tag-row snakes" id="styleButtons">
           <button class="arena-btn active" onclick="setStyle('CLASSIC', this)">Classic</button>
           <button class="arena-btn" onclick="setStyle('SKELETON', this)">Skeleton</button>
-          <button class="arena-btn" onclick="setStyle('SINGULARITY', this)">Singularity</button>
           <button class="arena-btn" onclick="setStyle('PLASMA', this)">Plasma</button>
         </div>
       </div>
@@ -221,7 +252,7 @@
       </div>
     </section>
 
-    <!-- 19 ANIMATED ARENAS SECTION WITH LIVE PREVIEWS IN EVERY CARD -->
+    <!-- 19 ANIMATED ARENAS SECTION WITH SMOOTH NON-CLICKABLE LIVE MINI PREVIEW CARDS -->
     <section class="section-wrap" id="arenas">
       <div class="section-title reveal">
         <h2>19 Animated Arenas</h2>
@@ -340,17 +371,17 @@
   </footer>
 
   <script>
-    const ALL_ARENAS = [
+    const ALL_19_ARENAS = [
       { id: 'VOID', name: 'Void' },
-      { id: 'BLACK_HOLE', name: 'Black Hole' },
       { id: 'CYBERCITY', name: 'Cyber City' },
-      { id: 'MAGMA', name: 'Magma' },
+      { id: 'STORM', name: 'Storm' },
       { id: 'ABYSS', name: 'Abyss' },
+      { id: 'BLACK_HOLE', name: 'Black Hole' },
+      { id: 'MAGMA', name: 'Magma' },
       { id: 'CHRONO', name: 'Chrono' },
       { id: 'CAVE', name: 'Cave' },
       { id: 'OCEAN', name: 'Ocean' },
       { id: 'SUNSET', name: 'Sunset' },
-      { id: 'STORM', name: 'Storm' },
       { id: 'AURORA', name: 'Aurora' },
       { id: 'MATRIX', name: 'Matrix' },
       { id: 'FOREST', name: 'Forest' },
@@ -362,7 +393,7 @@
       { id: 'BLOOM', name: 'Bloom' }
     ];
 
-    // Main Canvas Setup
+    // Main Gameplay Canvas Setup
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     const W = canvas.width, H = canvas.height;
@@ -374,19 +405,17 @@
     let phase = 0;
     let score = 2840;
 
-    // Build the 19 Live Cards in the Arenas Grid
+    // Build the 19 Smooth-Cornered Live Mini Preview Cards (Non-clickable)
     const arenaLiveGrid = document.getElementById('arenaLiveGrid');
     const cardCanvases = [];
 
-    ALL_ARENAS.forEach(arena => {
+    ALL_19_ARENAS.forEach(arena => {
       const card = document.createElement('div');
-      card.className = `arena-card ${arena.id === currentTheme ? 'active' : ''}`;
-      card.dataset.arena = arena.id;
-      card.onclick = () => selectArenaCard(arena.id);
+      card.className = 'arena-card';
 
       const c = document.createElement('canvas');
-      c.width = 170;
-      c.height = 106;
+      c.width = 180;
+      c.height = 112;
 
       const overlay = document.createElement('div');
       overlay.className = 'arena-card-overlay';
@@ -399,7 +428,7 @@
       card.appendChild(overlay);
       arenaLiveGrid.appendChild(card);
 
-      cardCanvases.push({ id: arena.id, canvas: c, ctx: c.getContext('2d'), card: card });
+      cardCanvases.push({ id: arena.id, canvas: c, ctx: c.getContext('2d') });
     });
 
     function setArena(t, btn) {
@@ -407,24 +436,6 @@
       document.getElementById('labelTheme').innerText = 'ARENA: ' + t.replace('_', ' ');
       document.querySelectorAll('#arenaButtons .arena-btn').forEach(b => b.classList.remove('active'));
       if (btn) btn.classList.add('active');
-      else {
-        document.querySelectorAll('#arenaButtons .arena-btn').forEach(b => {
-          if (b.innerText.toUpperCase().replace(/\s+/g, '_') === t) b.classList.add('active');
-        });
-      }
-      updateActiveCard(t);
-    }
-
-    function selectArenaCard(t) {
-      setArena(t);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function updateActiveCard(t) {
-      cardCanvases.forEach(item => {
-        if (item.id === t) item.card.classList.add('active');
-        else item.card.classList.remove('active');
-      });
     }
 
     function setStyle(s, btn) {
@@ -447,13 +458,13 @@
 
     let moveProgress = 0;
     let lastStepTime = performance.now();
-    const STEP_INTERVAL = 230; // Calm, relaxed tempo (~4.3 steps/sec)
+    const STEP_INTERVAL = 240; // Calm, relaxed tempo (~4.1 steps/sec)
 
     function updateCalmSnake() {
       prevSnake = snake.map(s => ({...s}));
       let head = snake[0];
 
-      // Targets sorted by distance
+      // Targets sorted by proximity
       let targets = [food, specialFood, shrinkFood];
       let bestTarget = food;
       let minD = 999;
@@ -467,11 +478,9 @@
         {x: 0, y: -1}, {x: 1, y: 0}, {x: 0, y: 1}, {x: -1, y: 0}
       ];
 
-      // Current heading
       const neck = snake[1] || head;
       const curDir = { x: head.x - neck.x, y: head.y - neck.y };
 
-      // Candidate scores
       let candidates = [];
       dirs.forEach(d => {
         // Prevent instant 180° neck snap
@@ -480,14 +489,14 @@
         let nx = head.x + d.x;
         let ny = head.y + d.y;
 
-        // Keep inside calm boundary (avoid perimeter hitting)
+        // Keep inside calm boundary (avoid perimeter wall collisions)
         if (nx < 1 || nx >= COLS - 1 || ny < 1 || ny >= ROWS - 1) return;
 
         // Avoid self collision
         let hitSelf = snake.some((seg, idx) => idx < snake.length - 1 && seg.x === nx && seg.y === ny);
         if (hitSelf) return;
 
-        // Space evaluation (look-ahead flood search to guarantee calm open space)
+        // Look-ahead flood search for open space
         let openSpace = 0;
         dirs.forEach(sd => {
           let sx = nx + sd.x, sy = ny + sd.y;
@@ -497,7 +506,6 @@
         });
 
         let distToTarget = Math.hypot(nx - bestTarget.x, ny - bestTarget.y);
-        // Prefer open space and heading towards target gracefully
         let scoreVal = -distToTarget * 2.0 + openSpace * 4.0;
         candidates.push({ dir: d, nx: nx, ny: ny, score: scoreVal });
       });
@@ -507,7 +515,7 @@
         candidates.sort((a, b) => b.score - a.score);
         chosen = candidates[0];
       } else {
-        // Emergency escape: take any non-colliding move
+        // Graceful fallback move
         for (let d of dirs) {
           let nx = (head.x + d.x + COLS) % COLS;
           let ny = (head.y + d.y + ROWS) % ROWS;
@@ -543,7 +551,7 @@
     }
 
     // -------------------------------------------------------------
-    // BACKDROP RENDER ENGINE (19 JETPACK COMPOSE THEMES)
+    // BACKDROP RENDER ENGINE (ALL 19 THEMES)
     // -------------------------------------------------------------
     function renderBackdrop(c, w, h, themeName, p, headPos) {
       const pi2 = Math.PI * 2;
@@ -576,7 +584,7 @@
           c.strokeStyle = `rgba(0, 245, 160, ${0.03 + rFrac * 0.10})`; c.stroke();
         }
 
-        for (let i = 0; i < 24; i++) {
+        for (let i = 0; i < 22; i++) {
           const seed = i;
           const prog = ((cycle * (1 + (i % 3))) + seed * 0.073) % 1;
           const orbitR = w * (0.15 + (1 - prog) * 0.55);
@@ -587,30 +595,6 @@
           c.fillStyle = (i % 2 === 0) ? `rgba(0, 245, 160, ${alpha})` : `rgba(0, 217, 255, ${alpha})`;
           c.beginPath(); c.arc(px, py, 1.2 + (i % 3) * 0.6, 0, pi2); c.fill();
         }
-      }
-      else if (themeName === 'BLACK_HOLE') {
-        c.fillStyle = '#000000'; c.fillRect(0, 0, w, h);
-        const cx = w * 0.5, cy = h * 0.46, holeR = w * 0.215;
-
-        let bg = c.createRadialGradient(cx, cy, 20, cx, cy, w * 0.95);
-        bg.addColorStop(0, 'rgba(3, 16, 34, 0.25)'); bg.addColorStop(1, '#000000');
-        c.fillStyle = bg; c.fillRect(0, 0, w, h);
-
-        c.save();
-        c.translate(cx, cy); c.rotate(-34 * Math.PI / 180);
-        let disk = c.createLinearGradient(-holeR * 3, 0, holeR * 3, 0);
-        disk.addColorStop(0, 'transparent');
-        disk.addColorStop(0.25, 'rgba(69, 176, 236, 0.6)');
-        disk.addColorStop(0.5, '#ffffff');
-        disk.addColorStop(0.75, 'rgba(110, 198, 242, 0.5)');
-        disk.addColorStop(1, 'transparent');
-        c.strokeStyle = disk; c.lineWidth = Math.max(4, w * 0.038);
-        c.beginPath(); c.ellipse(0, 0, holeR * 1.74, holeR * 0.78, 0, 0, pi2); c.stroke();
-        c.restore();
-
-        c.fillStyle = '#000102'; c.beginPath(); c.arc(cx, cy, holeR * 1.02, 0, pi2); c.fill();
-        c.strokeStyle = 'rgba(204, 235, 249, 0.8)'; c.lineWidth = 2.5;
-        c.beginPath(); c.arc(cx, cy, holeR * 1.026, 0, pi2); c.stroke();
       }
       else if (themeName === 'CYBERCITY') {
         let grad = c.createLinearGradient(0, 0, 0, h);
@@ -642,23 +626,24 @@
           c.beginPath(); c.arc(tx, ty, 2, 0, pi2); c.fill();
         }
       }
-      else if (themeName === 'MAGMA') {
+      else if (themeName === 'STORM') {
         let grad = c.createLinearGradient(0, 0, 0, h);
-        grad.addColorStop(0, '#030101'); grad.addColorStop(0.5, '#280704'); grad.addColorStop(1, '#020101');
+        grad.addColorStop(0, '#01030a'); grad.addColorStop(0.5, '#0b1727'); grad.addColorStop(1, '#02050b');
         c.fillStyle = grad; c.fillRect(0, 0, w, h);
 
-        let dome = c.createRadialGradient(w * 0.52, h * 0.62, 10, w * 0.52, h * 0.62, w * 0.85);
-        dome.addColorStop(0, 'rgba(255, 221, 115, 0.35)');
-        dome.addColorStop(0.4, 'rgba(255, 72, 0, 0.2)');
-        dome.addColorStop(1, 'transparent');
-        c.fillStyle = dome; c.fillRect(0, 0, w, h);
+        const flash = (Math.sin(ph * 5) > 0.9) ? 0.75 : 0;
+        if (flash > 0) {
+          c.fillStyle = `rgba(255, 255, 255, ${0.14 * flash})`; c.fillRect(0, 0, w, h);
+          c.strokeStyle = '#ffffff'; c.lineWidth = 2.2;
+          c.beginPath(); c.moveTo(w * 0.6, 0); c.lineTo(w * 0.54, h * 0.25); c.lineTo(w * 0.62, h * 0.4); c.lineTo(w * 0.52, h * 0.7); c.stroke();
+        }
 
-        for (let l = 0; l < 3; l++) {
-          const lx = w * (0.2 + l * 0.3), ly = h * (0.65 + (l % 2) * 0.1);
-          c.fillStyle = '#1e0604';
-          c.beginPath(); c.ellipse(lx, ly, w * 0.24, h * 0.09, (l - 1) * 0.2, 0, pi2); c.fill();
-          c.strokeStyle = '#ff3d00'; c.lineWidth = 2; c.stroke();
-          c.strokeStyle = '#ffe066'; c.lineWidth = 0.8; c.stroke();
+        // Heavy Rain Lines
+        c.strokeStyle = 'rgba(167, 217, 255, 0.2)'; c.lineWidth = 1;
+        for (let i = 0; i < 20; i++) {
+          const rx = (i * 24 + ph * 320) % w;
+          const ry = (i * 38 + ph * 520) % h;
+          c.beginPath(); c.moveTo(rx, ry); c.lineTo(rx + 6, ry + 16); c.stroke();
         }
       }
       else if (themeName === 'ABYSS') {
@@ -682,6 +667,49 @@
         spot.addColorStop(0.5, 'rgba(0, 136, 163, 0.06)');
         spot.addColorStop(1, 'transparent');
         c.fillStyle = spot; c.fillRect(0, 0, w, h);
+      }
+      else if (themeName === 'BLACK_HOLE') {
+        c.fillStyle = '#000000'; c.fillRect(0, 0, w, h);
+        const cx = w * 0.5, cy = h * 0.46, holeR = w * 0.215;
+
+        let bg = c.createRadialGradient(cx, cy, 20, cx, cy, w * 0.95);
+        bg.addColorStop(0, 'rgba(3, 16, 34, 0.25)'); bg.addColorStop(1, '#000000');
+        c.fillStyle = bg; c.fillRect(0, 0, w, h);
+
+        c.save();
+        c.translate(cx, cy); c.rotate(-34 * Math.PI / 180);
+        let disk = c.createLinearGradient(-holeR * 3, 0, holeR * 3, 0);
+        disk.addColorStop(0, 'transparent');
+        disk.addColorStop(0.25, 'rgba(69, 176, 236, 0.6)');
+        disk.addColorStop(0.5, '#ffffff');
+        disk.addColorStop(0.75, 'rgba(110, 198, 242, 0.5)');
+        disk.addColorStop(1, 'transparent');
+        c.strokeStyle = disk; c.lineWidth = Math.max(4, w * 0.038);
+        c.beginPath(); c.ellipse(0, 0, holeR * 1.74, holeR * 0.78, 0, 0, pi2); c.stroke();
+        c.restore();
+
+        c.fillStyle = '#000102'; c.beginPath(); c.arc(cx, cy, holeR * 1.02, 0, pi2); c.fill();
+        c.strokeStyle = 'rgba(204, 235, 249, 0.8)'; c.lineWidth = 2.5;
+        c.beginPath(); c.arc(cx, cy, holeR * 1.026, 0, pi2); c.stroke();
+      }
+      else if (themeName === 'MAGMA') {
+        let grad = c.createLinearGradient(0, 0, 0, h);
+        grad.addColorStop(0, '#030101'); grad.addColorStop(0.5, '#280704'); grad.addColorStop(1, '#020101');
+        c.fillStyle = grad; c.fillRect(0, 0, w, h);
+
+        let dome = c.createRadialGradient(w * 0.52, h * 0.62, 10, w * 0.52, h * 0.62, w * 0.85);
+        dome.addColorStop(0, 'rgba(255, 221, 115, 0.35)');
+        dome.addColorStop(0.4, 'rgba(255, 72, 0, 0.2)');
+        dome.addColorStop(1, 'transparent');
+        c.fillStyle = dome; c.fillRect(0, 0, w, h);
+
+        for (let l = 0; l < 3; l++) {
+          const lx = w * (0.2 + l * 0.3), ly = h * (0.65 + (l % 2) * 0.1);
+          c.fillStyle = '#1e0604';
+          c.beginPath(); c.ellipse(lx, ly, w * 0.24, h * 0.09, (l - 1) * 0.2, 0, pi2); c.fill();
+          c.strokeStyle = '#ff3d00'; c.lineWidth = 2; c.stroke();
+          c.strokeStyle = '#ffe066'; c.lineWidth = 0.8; c.stroke();
+        }
       }
       else if (themeName === 'CHRONO') {
         let grad = c.createRadialGradient(w*0.5, h*0.48, 10, w*0.5, h*0.48, w*0.85);
@@ -737,18 +765,6 @@
         c.fillStyle = grad; c.fillRect(0, 0, w, h);
         c.fillStyle = '#ffe8a6'; c.beginPath(); c.arc(w * 0.72, h * 0.34, w * 0.065, 0, pi2); c.fill();
       }
-      else if (themeName === 'STORM') {
-        let grad = c.createLinearGradient(0, 0, 0, h);
-        grad.addColorStop(0, '#01030a'); grad.addColorStop(0.5, '#0b1727'); grad.addColorStop(1, '#02050b');
-        c.fillStyle = grad; c.fillRect(0, 0, w, h);
-
-        const flash = (Math.sin(ph * 5) > 0.9) ? 0.75 : 0;
-        if (flash > 0) {
-          c.fillStyle = `rgba(255, 255, 255, ${0.14 * flash})`; c.fillRect(0, 0, w, h);
-          c.strokeStyle = '#ffffff'; c.lineWidth = 2;
-          c.beginPath(); c.moveTo(w * 0.6, 0); c.lineTo(w * 0.54, h * 0.25); c.lineTo(w * 0.62, h * 0.4); c.lineTo(w * 0.52, h * 0.7); c.stroke();
-        }
-      }
       else if (themeName === 'AURORA') {
         let grad = c.createLinearGradient(0, 0, 0, h);
         grad.addColorStop(0, '#010510'); grad.addColorStop(0.5, '#052329'); grad.addColorStop(1, '#01040c');
@@ -775,7 +791,6 @@
         }
       }
       else {
-        // Fallback for remaining procedural themes
         let grad = c.createLinearGradient(0, 0, 0, h);
         if (themeName === 'FOREST') { grad.addColorStop(0, '#010503'); grad.addColorStop(0.5, '#082013'); grad.addColorStop(1, '#010402'); }
         else if (themeName === 'TEMPLE') { grad.addColorStop(0, '#01020a'); grad.addColorStop(0.5, '#0d1630'); grad.addColorStop(1, '#02060b'); }
@@ -787,13 +802,13 @@
         c.fillStyle = grad; c.fillRect(0, 0, w, h);
       }
 
-      // Border Rails
-      c.strokeStyle = (themeName === 'MATRIX') ? 'rgba(57, 255, 20, 0.5)' : 'rgba(0, 245, 255, 0.35)';
-      c.lineWidth = 2; c.strokeRect(1, 1, w - 2, h - 2);
+      // Perimeter containment border
+      c.strokeStyle = (themeName === 'MATRIX') ? 'rgba(57, 255, 20, 0.45)' : 'rgba(0, 245, 255, 0.35)';
+      c.lineWidth = 1.8; c.strokeRect(1, 1, w - 2, h - 2);
     }
 
     // -------------------------------------------------------------
-    // ACCURATE SNAKE SKINS RENDERING
+    // ACCURATE SNAKE SKINS RENDERING (CLASSIC, SKELETON, PLASMA)
     // -------------------------------------------------------------
     function renderSnake(c, centers, rad, styleName, p) {
       if (!centers || centers.length === 0) return;
@@ -843,14 +858,6 @@
         c.beginPath(); c.arc(head.x - rad*0.32, head.y - rad*0.2, rad*0.22, 0, pi2); c.fill();
         c.beginPath(); c.arc(head.x + rad*0.32, head.y - rad*0.2, rad*0.22, 0, pi2); c.fill();
       }
-      else if (styleName === 'SINGULARITY') {
-        for (let i = centers.length - 1; i >= 0; i--) {
-          const pt = centers[i];
-          c.fillStyle = '#000000'; c.beginPath(); c.arc(pt.x, pt.y, rad * 0.9, 0, pi2); c.fill();
-          c.strokeStyle = (i % 2 === 0) ? '#00dfd8' : '#ff0080'; c.lineWidth = 2;
-          c.beginPath(); c.arc(pt.x, pt.y, rad * 1.05, (p * 2.5 + i) % pi2, (p * 2.5 + i + Math.PI) % pi2); c.stroke();
-        }
-      }
       else if (styleName === 'PLASMA') {
         c.strokeStyle = '#00f5ff'; c.lineWidth = 2.5;
         for (let i = 0; i < centers.length - 1; i++) {
@@ -874,24 +881,14 @@
     function renderFoods(c, p, currentTheme) {
       const pulse = 1.0 + 0.08 * Math.sin(p * 4);
 
-      // 1. Standard Pellet / Procedural Planet
+      // 1. Standard Food Pellet
       const fx = (food.x + 0.5) * cellW, fy = (food.y + 0.5) * cellH;
       const fRad = Math.min(cellW, cellH) * 0.32 * pulse;
-      
-      if (currentTheme === 'BLACK_HOLE') {
-        c.fillStyle = 'rgba(100, 181, 246, 0.35)'; c.beginPath(); c.arc(fx, fy, fRad * 1.6, 0, Math.PI * 2); c.fill();
-        let planGrad = c.createRadialGradient(fx - fRad*0.3, fy - fRad*0.3, fRad*0.2, fx, fy, fRad);
-        planGrad.addColorStop(0, '#64b5f6'); planGrad.addColorStop(0.7, '#1565c0'); planGrad.addColorStop(1, '#0b101d');
-        c.fillStyle = planGrad; c.beginPath(); c.arc(fx, fy, fRad, 0, Math.PI * 2); c.fill();
-        c.strokeStyle = 'rgba(187, 222, 251, 0.8)'; c.lineWidth = 1.2;
-        c.beginPath(); c.ellipse(fx, fy, fRad * 1.6, fRad * 0.45, -25 * Math.PI / 180, 0, Math.PI * 2); c.stroke();
-      } else {
-        c.fillStyle = 'rgba(255, 23, 68, 0.25)'; c.beginPath(); c.arc(fx, fy, fRad * 2.2, 0, Math.PI * 2); c.fill();
-        c.fillStyle = '#ff1744'; c.beginPath(); c.arc(fx, fy, fRad, 0, Math.PI * 2); c.fill();
-        c.fillStyle = '#ffffff'; c.beginPath(); c.arc(fx - fRad * 0.3, fy - fRad * 0.3, fRad * 0.28, 0, Math.PI * 2); c.fill();
-      }
+      c.fillStyle = 'rgba(255, 23, 68, 0.25)'; c.beginPath(); c.arc(fx, fy, fRad * 2.2, 0, Math.PI * 2); c.fill();
+      c.fillStyle = '#ff1744'; c.beginPath(); c.arc(fx, fy, fRad, 0, Math.PI * 2); c.fill();
+      c.fillStyle = '#ffffff'; c.beginPath(); c.arc(fx - fRad * 0.3, fy - fRad * 0.3, fRad * 0.28, 0, Math.PI * 2); c.fill();
 
-      // 2. Magenta Diamond Food
+      // 2. Magenta Diamond Bonus Food
       const sx = (specialFood.x + 0.5) * cellW, sy = (specialFood.y + 0.5) * cellH;
       const sRad = Math.min(cellW, cellH) * 0.38 * pulse;
       c.fillStyle = 'rgba(255, 0, 255, 0.25)'; c.beginPath(); c.arc(sx, sy, sRad * 2.2, 0, Math.PI * 2); c.fill();
@@ -943,7 +940,7 @@
       renderFoods(ctx, phase, currentTheme);
       renderSnake(ctx, interpCenters, cellW * 0.44, currentStyle, phase);
 
-      // 2. Render all 19 Cards with Live Animated Arenas
+      // 2. Render All 19 Live Mini Preview Cards
       cardCanvases.forEach(item => {
         item.ctx.clearRect(0, 0, item.canvas.width, item.canvas.height);
         renderBackdrop(item.ctx, item.canvas.width, item.canvas.height, item.id, phase, { x: item.canvas.width * 0.5, y: item.canvas.height * 0.5 });
