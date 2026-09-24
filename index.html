@@ -4,72 +4,74 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>mSnake - The Ultimate 2D Competitive Snake Arena</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='25' fill='%23000'/><rect x='10' y='10' width='80' height='80' rx='20' fill='none' stroke='%23a6ff00' stroke-width='6'/><path d='M30 30h40v20H30v20h40' fill='none' stroke='%23a6ff00' stroke-width='10' stroke-linecap='round'/><rect x='70' y='65' width='12' height='12' rx='3' fill='%23ff0055'/></svg>">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='25' fill='%23000'/><rect x='10' y='10' width='80' height='80' rx='20' fill='none' stroke='%2339FF14' stroke-width='6'/><path d='M30 30h40v20H30v20h40' fill='none' stroke='%2339FF14' stroke-width='10' stroke-linecap='round'/><circle cx='70' cy='65' r='8' fill='%23FF0055'/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #06070a;
-      --surface: #0e1017;
+      --bg: #030407;
+      --surface: #0a0c13;
       --card-bg: rgba(255, 255, 255, 0.035);
       --border: rgba(255, 255, 255, 0.08);
-      --border-glow: rgba(166, 255, 0, 0.4);
-      --primary: #a6ff00;
-      --primary-glow: rgba(166, 255, 0, 0.25);
-      --cyan: #00e5ff;
+      --border-glow: rgba(57, 255, 20, 0.35);
+      --primary: #39ff14;
+      --primary-dim: rgba(57, 255, 20, 0.15);
+      --cyan: #00f5ff;
       --accent-red: #ff1744;
       --text: #f3f5fa;
       --text-muted: #8b92a5;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
     body { background-color: var(--bg); color: var(--text); overflow-x: hidden; line-height: 1.6; }
-    header { position: sticky; top: 0; z-index: 100; backdrop-filter: blur(20px); background: rgba(6, 7, 10, 0.82); border-bottom: 1px solid var(--border); }
+    
+    header { position: sticky; top: 0; z-index: 100; backdrop-filter: blur(20px); background: rgba(3, 4, 7, 0.85); border-bottom: 1px solid var(--border); }
     nav { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; }
-    .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: #fff; font-size: 1.4rem; font-weight: 900; }
-    .brand-icon { width: 36px; height: 36px; border-radius: 10px; background: #000; border: 2px solid var(--primary); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 12px var(--primary-glow); }
-    .brand-icon svg { width: 22px; height: 22px; }
+    .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: #fff; font-size: 1.35rem; font-weight: 900; }
+    .brand-icon { width: 34px; height: 34px; border-radius: 9px; background: #000; border: 2px solid var(--primary); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px var(--primary-dim); }
     .brand span { color: var(--primary); }
-    .nav-links { display: flex; gap: 20px; align-items: center; }
-    .nav-link { background: none; border: none; color: var(--text-muted); font-size: 0.95rem; font-weight: 700; cursor: pointer; text-decoration: none; transition: color 0.2s; }
+    .nav-links { display: flex; gap: 24px; align-items: center; }
+    .nav-link { color: var(--text-muted); font-size: 0.95rem; font-weight: 700; text-decoration: none; transition: color 0.2s; }
     .nav-link:hover { color: var(--primary); }
-    .hero-container { max-width: 1200px; margin: 0 auto; padding: 60px 24px 80px; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 50px; align-items: center; }
-    .pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: 30px; background: rgba(166, 255, 0, 0.08); border: 1px solid var(--border-glow); color: var(--primary); font-size: 0.8rem; font-weight: 800; letter-spacing: 0.8px; margin-bottom: 24px; }
-    .pill .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 8px var(--primary); }
-    h1 { font-size: clamp(2.6rem, 5.2vw, 4rem); font-weight: 900; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 20px; }
+    
+    .hero-container { max-width: 1200px; margin: 0 auto; padding: 50px 24px 70px; display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 40px; align-items: center; }
+    .pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 30px; background: rgba(57, 255, 20, 0.08); border: 1px solid var(--border-glow); color: var(--primary); font-size: 0.8rem; font-weight: 800; letter-spacing: 0.8px; margin-bottom: 20px; }
+    .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 8px var(--primary); }
+    h1 { font-size: clamp(2.4rem, 4.5vw, 3.8rem); font-weight: 900; line-height: 1.1; letter-spacing: -1.2px; margin-bottom: 18px; }
     h1 span { background: linear-gradient(135deg, var(--primary), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .hero-text { color: var(--text-muted); font-size: 1.15rem; margin-bottom: 36px; max-width: 540px; }
+    .hero-text { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 30px; max-width: 520px; }
     .cta-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
-    .btn-playstore { display: inline-flex; align-items: center; gap: 12px; background: #fff; color: #000; text-decoration: none; padding: 14px 28px; border-radius: 14px; font-weight: 800; font-size: 1rem; transition: transform 0.2s, box-shadow 0.2s; }
-    .btn-playstore:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(255, 255, 255, 0.2); }
-    .btn-sub { display: inline-flex; align-items: center; gap: 8px; background: var(--card-bg); border: 1px solid var(--border); color: #fff; padding: 14px 24px; border-radius: 14px; text-decoration: none; font-weight: 700; font-size: 0.95rem; cursor: pointer; }
+    .btn-playstore { display: inline-flex; align-items: center; gap: 10px; background: #fff; color: #000; text-decoration: none; padding: 14px 26px; border-radius: 12px; font-weight: 800; font-size: 0.95rem; transition: transform 0.2s, box-shadow 0.2s; }
+    .btn-playstore:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(255, 255, 255, 0.18); }
+    .btn-sub { display: inline-flex; align-items: center; background: var(--card-bg); border: 1px solid var(--border); color: #fff; padding: 14px 22px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 0.95rem; transition: border-color 0.2s; }
     .btn-sub:hover { border-color: var(--primary); color: var(--primary); }
-    .arena-frame { background: linear-gradient(180deg, #13151f, #07080b); border: 1px solid var(--border); border-radius: 28px; padding: 20px; box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6); }
-    .arena-topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; font-size: 0.8rem; font-weight: 800; color: var(--text-muted); letter-spacing: 1px; }
-    #liveCanvas { width: 100%; aspect-ratio: 18 / 24; background: #000; border: 2px solid var(--border-glow); border-radius: 18px; display: block; }
-    .arena-controls { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; justify-content: center; }
-    .tag-btn { background: var(--card-bg); border: 1px solid var(--border); color: var(--text-muted); padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
-    .tag-btn:hover, .tag-btn.active { background: var(--primary-glow); border-color: var(--primary); color: #fff; }
-    .section-wrap { max-width: 1200px; margin: 0 auto; padding: 80px 24px; }
-    .section-title { text-align: center; margin-bottom: 50px; }
-    .section-title h2 { font-size: 2.4rem; font-weight: 900; margin-bottom: 12px; }
-    .section-title p { color: var(--text-muted); font-size: 1.1rem; }
-    .grid-features { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
-    .feature-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; padding: 36px 28px; transition: transform 0.25s, border-color 0.25s; }
-    .feature-card:hover { transform: translateY(-5px); border-color: var(--border-glow); }
-    .f-icon { font-size: 2rem; width: 60px; height: 60px; border-radius: 16px; background: rgba(166, 255, 0, 0.08); border: 1px solid var(--border-glow); display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
-    .feature-card h3 { font-size: 1.35rem; font-weight: 800; margin-bottom: 12px; }
+
+    .arena-viewport { background: #000; border: 2px solid var(--border); border-radius: 26px; padding: 18px; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8); position: relative; }
+    .arena-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.8rem; font-weight: 800; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+    #gameCanvas { width: 100%; aspect-ratio: 18 / 24; background: #000; border-radius: 16px; display: block; border: 1.5px solid rgba(255, 255, 255, 0.12); }
+    .controls-label { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); margin: 12px 0 6px; letter-spacing: 0.8px; }
+    .tag-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
+    .arena-btn { background: var(--card-bg); border: 1px solid var(--border); color: var(--text-muted); padding: 5px 11px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+    .arena-btn:hover, .arena-btn.active { background: var(--primary-dim); border-color: var(--primary); color: #fff; }
+
+    .section-wrap { max-width: 1200px; margin: 0 auto; padding: 70px 24px; }
+    .section-title { text-align: center; margin-bottom: 40px; }
+    .section-title h2 { font-size: 2.2rem; font-weight: 900; margin-bottom: 10px; }
+    .section-title p { color: var(--text-muted); font-size: 1.05rem; }
+    .grid-features { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+    .feature-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 30px 24px; }
+    .f-icon { font-size: 1.8rem; width: 50px; height: 50px; border-radius: 12px; background: rgba(57, 255, 20, 0.08); border: 1px solid var(--border-glow); display: flex; align-items: center; justify-content: center; margin-bottom: 18px; }
+    .feature-card h3 { font-size: 1.25rem; font-weight: 800; margin-bottom: 8px; }
     .feature-card p { color: var(--text-muted); font-size: 0.95rem; }
-    .cosmetics-strip { background: var(--surface); border: 1px solid var(--border); border-radius: 28px; padding: 40px; margin-top: 40px; }
-    .badge-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
-    .skin-tag { padding: 8px 14px; border-radius: 12px; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border); font-size: 0.85rem; font-weight: 700; }
-    .privacy-document { max-width: 860px; margin: 40px auto; padding: 50px 30px; background: var(--surface); border: 1px solid var(--border); border-radius: 28px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-    .privacy-document h1 { font-size: 2.4rem; color: var(--primary); margin-bottom: 8px; }
-    .privacy-document h2 { font-size: 1.35rem; margin: 30px 0 12px; color: #fff; }
-    .privacy-document p, .privacy-document li { color: var(--text-muted); margin-bottom: 14px; font-size: 0.98rem; }
-    .privacy-document ul { padding-left: 22px; }
-    footer { border-top: 1px solid var(--border); padding: 40px 24px; text-align: center; color: var(--text-muted); font-size: 0.9rem; }
-    @media (max-width: 900px) { .hero-container { grid-template-columns: 1fr; gap: 40px; padding: 30px 20px; } nav { padding: 14px 18px; } }
+
+    .privacy-document { max-width: 880px; margin: 0 auto; background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 45px 36px; line-height: 1.7; }
+    .privacy-document h1 { font-size: 2.2rem; color: var(--primary); margin-bottom: 10px; }
+    .privacy-document h2 { font-size: 1.3rem; margin: 26px 0 10px; color: #fff; }
+    .privacy-document p, .privacy-document li { color: var(--text-muted); margin-bottom: 12px; font-size: 0.96rem; }
+    .privacy-document ul { padding-left: 24px; }
+
+    footer { border-top: 1px solid var(--border); padding: 36px 24px; text-align: center; color: var(--text-muted); font-size: 0.9rem; }
+    @media (max-width: 900px) { .hero-container { grid-template-columns: 1fr; gap: 36px; padding: 30px 18px; } }
   </style>
 </head>
 <body>
@@ -77,15 +79,15 @@
     <nav>
       <a href="#" class="brand">
         <div class="brand-icon">
-          <svg viewBox="0 0 100 100">
-            <rect x="15" y="15" width="20" height="20" rx="5" fill="#a6ff00"/>
-            <rect x="40" y="15" width="20" height="20" rx="5" fill="#a6ff00"/>
-            <rect x="65" y="15" width="20" height="20" rx="5" fill="#a6ff00"/>
-            <rect x="65" y="40" width="20" height="20" rx="5" fill="#a6ff00"/>
-            <rect x="40" y="40" width="20" height="20" rx="5" fill="#a6ff00"/>
-            <rect x="15" y="40" width="20" height="20" rx="5" fill="#a6ff00"/>
-            <rect x="15" y="65" width="20" height="20" rx="5" fill="#a6ff00"/>
-            <rect x="40" y="65" width="20" height="20" rx="5" fill="#a6ff00"/>
+          <svg viewBox="0 0 100 100" width="22" height="22">
+            <rect x="15" y="15" width="20" height="20" rx="5" fill="#39ff14"/>
+            <rect x="40" y="15" width="20" height="20" rx="5" fill="#39ff14"/>
+            <rect x="65" y="15" width="20" height="20" rx="5" fill="#39ff14"/>
+            <rect x="65" y="40" width="20" height="20" rx="5" fill="#39ff14"/>
+            <rect x="40" y="40" width="20" height="20" rx="5" fill="#39ff14"/>
+            <rect x="15" y="40" width="20" height="20" rx="5" fill="#39ff14"/>
+            <rect x="15" y="65" width="20" height="20" rx="5" fill="#39ff14"/>
+            <rect x="40" y="65" width="20" height="20" rx="5" fill="#39ff14"/>
             <rect x="65" y="65" width="20" height="20" rx="5" fill="#ff1744"/>
           </svg>
         </div>
@@ -94,7 +96,6 @@
       <div class="nav-links">
         <a href="#" class="nav-link">Home</a>
         <a href="#features" class="nav-link">Features</a>
-        <a href="#cosmetics" class="nav-link">Skins</a>
         <a href="#privacy" class="nav-link">Privacy Policy</a>
       </div>
     </nav>
@@ -103,42 +104,64 @@
   <main>
     <div class="hero-container">
       <div>
-        <div class="pill"><span class="live-dot"></span> REAL-TIME MULTIPLAYER ARENA</div>
-        <h1>Swipe Fast. <span>Test Update From GitHub!</span></h1>
-        <p class="hero-text">Classic single-player snake reimagined into high-stakes 1v1 competitive arena duels. Powered by client-side prediction, authentic Jetpack Compose haptics, and zero-latency input buffering.</p>
+        <div class="pill"><span class="live-dot"></span> JETPACK COMPOSE NATIVE ENGINE</div>
+        <h1>Swipe Fast. <span>Dominate the Arena.</span></h1>
+        <p class="hero-text">Experience classic 2D Snake transformed into high-stakes arena duels. Powered by mathematical procedural shaders, zero-latency touch prediction, and real-time multiplayer.</p>
         <div class="cta-row">
           <a href="https://play.google.com/store/apps/details?id=com.md7.msnake" target="_blank" class="btn-playstore">Download on Google Play</a>
           <a href="#privacy" class="btn-sub">Privacy Policy</a>
         </div>
       </div>
-      <div class="arena-frame">
-        <div class="arena-topbar"><span id="arenaTitle">ARENA: VOID</span><span style="color:var(--primary)">● 60 FPS LIVE</span></div>
-        <canvas id="liveCanvas" width="360" height="480"></canvas>
-        <div class="arena-controls">
-          <button class="tag-btn active" onclick="setSkin('plasma')">Plasma</button>
-          <button class="tag-btn" onclick="setSkin('skeleton')">Skeleton</button>
-          <button class="tag-btn" onclick="setSkin('classic')">Classic</button>
-          <button class="tag-btn" onclick="setHat('crown')">👑 Crown</button>
-          <button class="tag-btn" onclick="setArena('matrix')">Matrix</button>
-          <button class="tag-btn" onclick="setArena('cybercity')">Cyber City</button>
+      
+      <div class="arena-viewport">
+        <div class="arena-header">
+          <span id="labelTheme">ARENA: VOID</span>
+          <span style="color:var(--primary)">● 60 FPS COMPOSE MATH</span>
+        </div>
+        <canvas id="gameCanvas" width="360" height="480"></canvas>
+        
+        <div class="controls-label">Arena Backdrops (Mainactivity)</div>
+        <div class="tag-row">
+          <button class="arena-btn active" onclick="setArena('VOID')">Void</button>
+          <button class="arena-btn" onclick="setArena('BLACK_HOLE')">Black Hole</button>
+          <button class="arena-btn" onclick="setArena('CYBERCITY')">Cyber City</button>
+          <button class="arena-btn" onclick="setArena('MAGMA')">Magma</button>
+          <button class="arena-btn" onclick="setArena('OCEAN')">Ocean</button>
+          <button class="arena-btn" onclick="setArena('SUNSET')">Sunset</button>
+          <button class="arena-btn" onclick="setArena('MATRIX')">Matrix</button>
+        </div>
+
+        <div class="controls-label">Snake Loadout Styles</div>
+        <div class="tag-row">
+          <button class="arena-btn active" onclick="setStyle('CLASSIC')">Classic</button>
+          <button class="arena-btn" onclick="setStyle('SKELETON')">Skeleton</button>
+          <button class="arena-btn" onclick="setStyle('PLASMA')">Plasma</button>
+          <button class="arena-btn" onclick="setStyle('SINGULARITY')">Singularity</button>
+          <button class="arena-btn" onclick="setStyle('SAMURAI')">Samurai</button>
         </div>
       </div>
     </div>
 
     <section class="section-wrap" id="features">
-      <div class="section-title"><h2>Engineered for High-Level Play</h2><p>Built for mobile speed and competitive integrity.</p></div>
-      <div class="grid-features">
-        <div class="feature-card"><div class="f-icon">⚡</div><h3>Zero-Latency Swipes</h3><p>Local client prediction executes direction turns immediately upon touch, matching offline single-player responsiveness.</p></div>
-        <div class="feature-card"><div class="f-icon">🍏</div><h3>Tactical Power Foods</h3><p>Eat +10 regular food, race for 100-point Special Foods, or grab the Shrink Food to cut 5 tail segments.</p></div>
-        <div class="feature-card"><div class="f-icon">⚔️</div><h3>1v1 Private & Quick Match</h3><p>Instant lobby matchmaking with 4-letter room codes, duel rematch challenges, and built-in smart bots.</p></div>
+      <div class="section-title">
+        <h2>Engineered for Precision</h2>
+        <p>Direct architectural parity with our native Android codebase.</p>
       </div>
-    </section>
-
-    <section class="section-wrap" id="cosmetics">
-      <div class="cosmetics-strip">
-        <h2>Deep Loadout Customization</h2>
-        <div class="badge-list">
-          <span class="skin-tag">Classic</span><span class="skin-tag">Neon</span><span class="skin-tag">Ghost</span><span class="skin-tag">Cyber</span><span class="skin-tag">Toxic</span><span class="skin-tag">Fire</span><span class="skin-tag">Aqua</span><span class="skin-tag">Shadow</span><span class="skin-tag">Crystal</span><span class="skin-tag">Smoke</span><span class="skin-tag">Prism</span><span class="skin-tag">Steel</span><span class="skin-tag">Samurai</span><span class="skin-tag">Plasma</span><span class="skin-tag">Mecha</span><span class="skin-tag">Skeleton</span><span class="skin-tag">Singularity</span><span class="skin-tag">Mummy</span>
+      <div class="grid-features">
+        <div class="feature-card">
+          <div class="f-icon">⚡</div>
+          <h3>Deterministic Interpolation</h3>
+          <p>Movement progress smoothly bridges discrete grid moves with interpolated screen centers for fluid 60 FPS motion.</p>
+        </div>
+        <div class="feature-card">
+          <div class="f-icon">🍏</div>
+          <h3>Tactical Power Foods</h3>
+          <p>Standard energy pellets, magenta diamond +100 point targets, and cyan shrink foods that slice 5 segments off your tail.</p>
+        </div>
+        <div class="feature-card">
+          <div class="f-icon">⚔️</div>
+          <h3>1v1 Real-Time Matchmaking</h3>
+          <p>Challenge friends with 4-letter room codes or enter public queues with instant rematching and adaptive bot backfills.</p>
         </div>
       </div>
     </section>
@@ -147,45 +170,325 @@
       <div class="privacy-document">
         <h1>Privacy Policy for mSnake</h1>
         <p><strong>Effective Date:</strong> September 2026</p>
-        <p>This privacy policy governs your use of the mobile application <strong>mSnake</strong>, developed by <strong>Md7</strong>.</p>
-        <h2>1. Information We Collect</h2>
-        <p>mSnake does not require personal information like your real name, email, or phone number. High scores and unlocks are stored locally on your device or via Google Play Games Services.</p>
-        <h2>2. Third-Party Services</h2>
-        <p>The app integrates Google Play Services for leaderboards and Google AdMob for in-game advertisements in compliance with standard policies.</p>
-        <h2>3. Contact</h2>
-        <p>Developer Support: <strong>support@msnake.shop</strong></p>
+        <p>This privacy policy governs your use of the software application <strong>mSnake</strong> ("Application") for mobile devices, created and published by <strong>Md7</strong>.</p>
+        
+        <h2>1. What Information Does the Application Obtain?</h2>
+        <p><strong>User Provided Information:</strong> The Application does not require registration or personal details like your legal name, physical address, or phone number.</p>
+        <p><strong>Automatically Collected Information:</strong> The Application may collect certain non-identifying technical data automatically, including the type of mobile device you use, device unique ID, operating system version, and anonymous diagnostic logs to improve performance.</p>
+
+        <h2>2. In-Game Progress & Multiplayer</h2>
+        <p>Single-player records, unlocked arena themes, and cosmetic skins are saved locally on your mobile device or synchronized securely using Google Play Games Services.</p>
+        <p>During multiplayer matches, transient inputs and room tokens are processed in real-time memory across our secure network to deliver smooth peer-to-peer gameplay. No match histories or duel recordings are permanently indexed or shared with third parties.</p>
+
+        <h2>3. Third-Party Partners & AdMob</h2>
+        <p>We work with trusted third-party service providers:</p>
+        <ul>
+          <li><strong>Google Play Services:</strong> Cloud leaderboard rankings, achievements, and player authentication.</li>
+          <li><strong>Google AdMob:</strong> Serves non-intrusive banner, interstitial, and rewarded continue advertisements compliant with Google's Play Family and Developer policies.</li>
+        </ul>
+
+        <h2>4. Data Retention & Account Deletion</h2>
+        <p>Because we do not store personal profiles on private servers, you have complete sovereignty over your data. You can erase all game records and high scores instantly at any time by clearing the Application's storage via your Android device settings.</p>
+
+        <h2>5. Developer Support</h2>
+        <p>If you have any questions regarding privacy while using the Application, contact our support team:</p>
+        <p><strong>Email:</strong> support@msnake.shop</p>
       </div>
     </section>
   </main>
 
-  <footer><p>&copy; 2026 mSnake • All Rights Reserved</p></footer>
+  <footer>
+    <p>&copy; 2026 mSnake • Developed by Md7 • All Rights Reserved</p>
+  </footer>
 
   <script>
-    const canvas = document.getElementById('liveCanvas');
+    const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
-    const COLS = 18, ROWS = 24, CELL = canvas.width / COLS;
-    let snake = [{x:9,y:12},{x:8,y:12},{x:7,y:12}], food = {x:14,y:8}, currentSkin = 'plasma', currentHat = 'crown', arenaTheme = 'void', tick = 0;
-    function setSkin(s) { currentSkin = s; }
-    function setHat(h) { currentHat = currentHat === h ? 'none' : h; }
-    function setArena(a) { arenaTheme = a; document.getElementById('arenaTitle').innerText = 'ARENA: ' + a.toUpperCase(); }
-    function loop() {
-      tick++;
-      if (tick % 8 === 0) {
-        let h = snake[0], dir = {x:0,y:0};
-        if (h.x < food.x) dir.x = 1; else if (h.x > food.x) dir.x = -1; else if (h.y < food.y) dir.y = 1; else if (h.y > food.y) dir.y = -1;
-        let next = {x: (h.x + dir.x + COLS) % COLS, y: (h.y + dir.y + ROWS) % ROWS};
-        snake.unshift(next);
-        if (next.x === food.x && next.y === food.y) food = {x: Math.floor(Math.random() * (COLS-2)) + 1, y: Math.floor(Math.random() * (ROWS-2)) + 1};
-        else snake.pop();
-      }
-      ctx.fillStyle = arenaTheme === 'matrix' ? '#051408' : arenaTheme === 'cybercity' ? '#10071c' : '#090a10';
-      ctx.fillRect(0,0,canvas.width,canvas.height);
-      ctx.fillStyle = '#ff1744'; ctx.beginPath(); ctx.arc((food.x + 0.5) * CELL, (food.y + 0.5) * CELL, CELL * 0.38, 0, Math.PI * 2); ctx.fill();
-      snake.forEach((seg, i) => {
-        ctx.fillStyle = currentSkin === 'skeleton' ? '#fff' : currentSkin === 'plasma' ? '#00e5ff' : '#a6ff00';
-        ctx.beginPath(); ctx.roundRect(seg.x * CELL + 2, seg.y * CELL + 2, CELL - 4, CELL - 4, 6); ctx.fill();
-        if (i === 0 && currentHat === 'crown') { ctx.font = '16px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('👑', (seg.x + 0.5) * CELL, (seg.y - 0.2) * CELL); }
+    const W = canvas.width, H = canvas.height;
+    const COLS = 18, ROWS = 24;
+    const cellW = W / COLS, cellH = H / ROWS;
+
+    let currentTheme = 'VOID';
+    let currentStyle = 'CLASSIC';
+    let phase = 0;
+    let tickCount = 0;
+
+    let snake = [
+      {x: 9, y: 12}, {x: 8, y: 12}, {x: 7, y: 12}, {x: 6, y: 12},
+      {x: 5, y: 12}, {x: 5, y: 13}, {x: 5, y: 14}, {x: 6, y: 14}
+    ];
+    let food = {x: 13, y: 9};
+    let specialFood = {x: 4, y: 6};
+    let shrinkFood = {x: 14, y: 18};
+
+    function setArena(t) {
+      currentTheme = t;
+      document.getElementById('labelTheme').innerText = 'ARENA: ' + t;
+      document.querySelectorAll('.controls-label:nth-of-type(1) + .tag-row .arena-btn').forEach(b => {
+        b.classList.toggle('active', b.innerText.toUpperCase().replace(/\s+/g, '_') === t);
       });
+    }
+
+    function setStyle(s) {
+      currentStyle = s;
+      document.querySelectorAll('.controls-label:nth-of-type(2) + .tag-row .arena-btn').forEach(b => {
+        b.classList.toggle('active', b.innerText.toUpperCase() === s);
+      });
+    }
+
+    // --- ARENA BACKDROP SHADERS ---
+    function drawArena(p) {
+      const pi2 = Math.PI * 2;
+      const ph = ((p % pi2) + pi2) % pi2;
+
+      if (currentTheme === 'VOID') {
+        let grad = ctx.createRadialGradient(W*0.5, H*0.45, 10, W*0.5, H*0.45, W*0.95);
+        grad.addColorStop(0, '#04060e'); grad.addColorStop(0.5, '#020308'); grad.addColorStop(1, '#000103');
+        ctx.fillStyle = grad; ctx.fillRect(0,0,W,H);
+
+        const breathing = 0.5 + 0.5 * Math.sin(ph * 1.5);
+        let halo = ctx.createRadialGradient(W*0.5, H*0.45, 0, W*0.5, H*0.45, W*0.75);
+        halo.addColorStop(0, `rgba(0, 245, 160, ${0.12 + breathing * 0.05})`);
+        halo.addColorStop(1, 'transparent');
+        ctx.fillStyle = halo; ctx.fillRect(0,0,W,H);
+
+        const horizonY = H * 0.58;
+        for (let i = 0; i <= 8; i++) {
+          const frac = i / 8;
+          ctx.beginPath();
+          ctx.moveTo(W * (0.3 + frac * 0.4), horizonY);
+          ctx.lineTo(W * (-0.1 + frac * 1.2), H);
+          ctx.strokeStyle = 'rgba(0, 245, 160, 0.08)'; ctx.lineWidth = 1.2; ctx.stroke();
+        }
+        for (let r = 1; r <= 7; r++) {
+          const rFrac = (r / 7) * (r / 7);
+          const rungY = horizonY + (H - horizonY) * rFrac;
+          ctx.beginPath(); ctx.moveTo(0, rungY); ctx.lineTo(W, rungY);
+          ctx.strokeStyle = `rgba(0, 245, 160, ${0.03 + rFrac * 0.10})`; ctx.stroke();
+        }
+      } 
+      else if (currentTheme === 'BLACK_HOLE') {
+        ctx.fillStyle = '#000000'; ctx.fillRect(0,0,W,H);
+        const cx = W * 0.5, cy = H * 0.46, holeR = W * 0.215;
+
+        let bgGrad = ctx.createRadialGradient(cx, cy, 20, cx, cy, W * 0.95);
+        bgGrad.addColorStop(0, 'rgba(3, 16, 34, 0.25)'); bgGrad.addColorStop(1, '#000');
+        ctx.fillStyle = bgGrad; ctx.fillRect(0,0,W,H);
+
+        ctx.save();
+        ctx.translate(cx, cy); ctx.rotate(-34 * Math.PI / 180);
+        let diskGrad = ctx.createLinearGradient(-holeR*3, 0, holeR*3, 0);
+        diskGrad.addColorStop(0, 'transparent'); diskGrad.addColorStop(0.3, 'rgba(69, 176, 236, 0.5)');
+        diskGrad.addColorStop(0.5, '#ffffff'); diskGrad.addColorStop(0.7, 'rgba(110, 198, 242, 0.5)'); diskGrad.addColorStop(1, 'transparent');
+        ctx.strokeStyle = diskGrad; ctx.lineWidth = 14;
+        ctx.beginPath(); ctx.ellipse(0, 0, holeR * 1.74, holeR * 0.78, 0, 0, pi2); ctx.stroke();
+        ctx.restore();
+
+        ctx.fillStyle = '#000102'; ctx.beginPath(); ctx.arc(cx, cy, holeR * 1.02, 0, pi2); ctx.fill();
+        ctx.strokeStyle = 'rgba(204, 235, 249, 0.75)'; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(cx, cy, holeR * 1.026, 0, pi2); ctx.stroke();
+      }
+      else if (currentTheme === 'CYBERCITY') {
+        let grad = ctx.createLinearGradient(0,0,0,H);
+        grad.addColorStop(0, '#010109'); grad.addColorStop(0.5, '#07052a'); grad.addColorStop(1, '#010107');
+        ctx.fillStyle = grad; ctx.fillRect(0,0,W,H);
+
+        for (let i = 0; i < 12; i++) {
+          const bx = W * (-0.04 + i * 0.09), bw = W * 0.07, bh = H * (0.22 + (i % 5) * 0.08);
+          ctx.fillStyle = i % 2 === 0 ? '#080a1b' : '#050716';
+          ctx.fillRect(bx, H * 0.7 - bh, bw, bh);
+        }
+        ctx.beginPath();
+        ctx.moveTo(-W*0.05, H*0.74);
+        ctx.bezierCurveTo(W*0.2, H*0.67, W*0.39, H*0.72, W*0.55, H*0.65);
+        ctx.bezierCurveTo(W*0.72, H*0.58, W*0.87, H*0.65, W*1.05, H*0.58);
+        ctx.strokeStyle = '#232344'; ctx.lineWidth = 10; ctx.stroke();
+        ctx.strokeStyle = 'rgba(94, 235, 255, 0.8)'; ctx.lineWidth = 2; ctx.stroke();
+      }
+      else if (currentTheme === 'MAGMA') {
+        let grad = ctx.createLinearGradient(0,0,0,H);
+        grad.addColorStop(0, '#030101'); grad.addColorStop(0.5, '#280704'); grad.addColorStop(1, '#020101');
+        ctx.fillStyle = grad; ctx.fillRect(0,0,W,H);
+        let dome = ctx.createRadialGradient(W*0.52, H*0.62, 10, W*0.52, H*0.62, W*0.85);
+        dome.addColorStop(0, 'rgba(255, 221, 115, 0.3)'); dome.addColorStop(0.4, 'rgba(255, 72, 0, 0.2)'); dome.addColorStop(1, 'transparent');
+        ctx.fillStyle = dome; ctx.fillRect(0,0,W,H);
+      }
+      else if (currentTheme === 'OCEAN') {
+        let grad = ctx.createLinearGradient(0,0,0,H);
+        grad.addColorStop(0, '#031626'); grad.addColorStop(0.4, '#02101c'); grad.addColorStop(1, '#00050a');
+        ctx.fillStyle = grad; ctx.fillRect(0,0,W,H);
+        for (let r = 0; r < 4; r++) {
+          const sway = Math.sin(ph * 1.2 + r * 1.4) * (W * 0.06);
+          const topX = W * (0.15 + r * 0.24);
+          ctx.fillStyle = `rgba(56, 225, 255, ${0.05 + 0.02 * Math.sin(ph * 2 + r)})`;
+          ctx.beginPath(); ctx.moveTo(topX, 0); ctx.lineTo(topX + W*0.08, 0); ctx.lineTo(topX + W*0.15 + sway, H*0.85); ctx.lineTo(topX + sway, H*0.85); ctx.fill();
+        }
+      }
+      else if (currentTheme === 'SUNSET') {
+        let grad = ctx.createLinearGradient(0,0,0,H);
+        grad.addColorStop(0, '#16082a'); grad.addColorStop(0.3, '#8c2745'); grad.addColorStop(0.6, '#ff9a52'); grad.addColorStop(1, '#170d18');
+        ctx.fillStyle = grad; ctx.fillRect(0,0,W,H);
+        ctx.fillStyle = '#ffe8a6'; ctx.beginPath(); ctx.arc(W*0.72, H*0.34, W*0.065, 0, pi2); ctx.fill();
+      }
+      else if (currentTheme === 'MATRIX') {
+        ctx.fillStyle = '#000000'; ctx.fillRect(0,0,W,H);
+        ctx.fillStyle = 'rgba(57, 255, 20, 0.6)';
+        for (let i = 0; i < 15; i++) {
+          const x = (i * 24 + 10) % W;
+          const y = ((ph * 60 * (1 + i % 3) + i * 40) % H);
+          ctx.fillRect(x, y, 3, 10);
+        }
+      }
+
+      // Arena Outer Frame
+      ctx.strokeStyle = currentTheme === 'MATRIX' ? 'rgba(57, 255, 20, 0.4)' : 'rgba(0, 245, 255, 0.3)';
+      ctx.lineWidth = 2.5; ctx.strokeRect(2, 2, W - 4, H - 4);
+    }
+
+    // --- PROCEDURAL FOOD SYSTEM ---
+    function drawFoods(p) {
+      const pulse = 1.0 + 0.08 * Math.sin(p * 4);
+
+      // Regular Food
+      const fRad = Math.min(cellW, cellH) * 0.32 * pulse;
+      const fx = (food.x + 0.5) * cellW, fy = (food.y + 0.5) * cellH;
+      ctx.fillStyle = 'rgba(255, 23, 68, 0.25)'; ctx.beginPath(); ctx.arc(fx, fy, fRad * 2.2, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#ff1744'; ctx.beginPath(); ctx.arc(fx, fy, fRad, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(fx - fRad * 0.3, fy - fRad * 0.3, fRad * 0.28, 0, Math.PI * 2); ctx.fill();
+
+      // Special Food (+100 Magenta Diamond)
+      const sRad = Math.min(cellW, cellH) * 0.38 * pulse;
+      const sx = (specialFood.x + 0.5) * cellW, sy = (specialFood.y + 0.5) * cellH;
+      ctx.fillStyle = 'rgba(255, 0, 255, 0.25)'; ctx.beginPath(); ctx.arc(sx, sy, sRad * 2.2, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#ff00ff';
+      ctx.beginPath(); ctx.moveTo(sx, sy - sRad); ctx.lineTo(sx + sRad, sy); ctx.lineTo(sx, sy + sRad); ctx.lineTo(sx - sRad, sy); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(sx, sy, sRad * 0.3, 0, Math.PI * 2); ctx.fill();
+
+      // Shrink Food (Cyan Shrink Pill)
+      const shRad = Math.min(cellW, cellH) * 0.34 * pulse;
+      const shx = (shrinkFood.x + 0.5) * cellW, shy = (shrinkFood.y + 0.5) * cellH;
+      ctx.fillStyle = 'rgba(0, 229, 255, 0.2)'; ctx.beginPath(); ctx.arc(shx, shy, shRad * 2.2, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#00e5ff'; ctx.beginPath(); ctx.arc(shx, shy, shRad, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2.5; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(shx - shRad * 0.4, shy); ctx.lineTo(shx + shRad * 0.4, shy); ctx.stroke();
+    }
+
+    // --- PROCEDURAL SNAKE LOADS ---
+    function drawSnake(p) {
+      const radius = Math.min(cellW, cellH) * 0.44;
+      const centers = snake.map(s => ({ x: (s.x + 0.5) * cellW, y: (s.y + 0.5) * cellH }));
+
+      if (currentStyle === 'CLASSIC') {
+        for (let i = centers.length - 1; i >= 0; i--) {
+          const pt = centers[i];
+          ctx.fillStyle = i === 0 ? '#39ff14' : '#22aa10';
+          ctx.beginPath(); ctx.arc(pt.x, pt.y, radius, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = 'rgba(0,0,0,0.18)'; ctx.beginPath(); ctx.arc(pt.x, pt.y, radius * 0.7, 0, Math.PI * 2); ctx.fill();
+          if (i === 0) {
+            ctx.fillStyle = '#fff';
+            ctx.beginPath(); ctx.arc(pt.x - radius*0.3, pt.y - radius*0.3, radius*0.22, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(pt.x + radius*0.3, pt.y - radius*0.3, radius*0.22, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = '#000';
+            ctx.beginPath(); ctx.arc(pt.x - radius*0.3, pt.y - radius*0.3, radius*0.1, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(pt.x + radius*0.3, pt.y - radius*0.3, radius*0.1, 0, Math.PI*2); ctx.fill();
+          }
+        }
+      }
+      else if (currentStyle === 'SKELETON') {
+        // Spine & Ribs
+        for (let i = 1; i < centers.length; i++) {
+          const p0 = centers[i - 1], p1 = centers[i];
+          const dx = p1.x - p0.x, dy = p1.y - p0.y;
+          const d = Math.hypot(dx, dy);
+          if (d === 0) continue;
+          const nx = -dy / d, ny = dx / d;
+
+          ctx.strokeStyle = '#faf7ee'; ctx.lineWidth = 1.6; ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(p1.x, p1.y); ctx.lineTo(p1.x + nx * radius * 0.9 + (dx/d)*radius*0.3, p1.y + ny * radius * 0.9 + (dy/d)*radius*0.3);
+          ctx.moveTo(p1.x, p1.y); ctx.lineTo(p1.x - nx * radius * 0.9 + (dx/d)*radius*0.3, p1.y - ny * radius * 0.9 + (dy/d)*radius*0.3);
+          ctx.stroke();
+
+          ctx.fillStyle = '#faf7ee'; ctx.beginPath(); ctx.arc(p1.x, p1.y, radius * 0.18, 0, Math.PI * 2); ctx.fill();
+        }
+        // Continuous spine cord
+        ctx.strokeStyle = '#faf7ee'; ctx.lineWidth = radius * 0.25; ctx.beginPath();
+        centers.forEach((pt, i) => { if (i === 0) ctx.moveTo(pt.x, pt.y); else ctx.lineTo(pt.x, pt.y); });
+        ctx.stroke();
+
+        // Anatomical Skull
+        const head = centers[0];
+        ctx.fillStyle = '#faf7ee';
+        ctx.beginPath(); ctx.roundRect(head.x - radius*0.8, head.y - radius*1.1, radius*1.6, radius*2.1, 8); ctx.fill();
+        ctx.fillStyle = '#14120e';
+        ctx.beginPath(); ctx.arc(head.x - radius*0.35, head.y - radius*0.2, radius*0.24, 0, Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.arc(head.x + radius*0.35, head.y - radius*0.2, radius*0.24, 0, Math.PI*2); ctx.fill();
+      }
+      else if (currentStyle === 'PLASMA') {
+        // High voltage electric discharge arcs
+        ctx.strokeStyle = '#00f5ff'; ctx.lineWidth = 3;
+        for (let i = 0; i < centers.length - 1; i++) {
+          const p1 = centers[i], p2 = centers[i+1];
+          const midX = (p1.x + p2.x) * 0.5 + (Math.random() - 0.5) * radius;
+          const midY = (p1.y + p2.y) * 0.5 + (Math.random() - 0.5) * radius;
+          ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(midX, midY); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+        }
+        for (let i = centers.length - 1; i >= 0; i--) {
+          const pt = centers[i];
+          ctx.fillStyle = 'rgba(0, 245, 255, 0.2)'; ctx.beginPath(); ctx.arc(pt.x, pt.y, radius * 1.5, 0, Math.PI*2); ctx.fill();
+          ctx.fillStyle = i % 2 === 0 ? '#00f5ff' : '#ff007f'; ctx.beginPath(); ctx.arc(pt.x, pt.y, radius * 0.85, 0, Math.PI*2); ctx.fill();
+          ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(pt.x, pt.y, radius * 0.3, 0, Math.PI*2); ctx.fill();
+        }
+      }
+      else if (currentStyle === 'SINGULARITY') {
+        for (let i = centers.length - 1; i >= 0; i--) {
+          const pt = centers[i];
+          ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(pt.x, pt.y, radius * 0.9, 0, Math.PI*2); ctx.fill();
+          ctx.strokeStyle = i % 2 === 0 ? '#00dfd8' : '#ff0080'; ctx.lineWidth = 2.2;
+          ctx.beginPath(); ctx.arc(pt.x, pt.y, radius * 1.05, 0, Math.PI*2); ctx.stroke();
+        }
+      }
+      else if (currentStyle === 'SAMURAI') {
+        for (let i = centers.length - 1; i >= 0; i--) {
+          const pt = centers[i];
+          ctx.fillStyle = i % 2 === 0 ? '#d32f2f' : '#8b0000';
+          ctx.beginPath(); ctx.roundRect(pt.x - radius, pt.y - radius, radius*2, radius*2, 4); ctx.fill();
+          ctx.strokeStyle = '#ffd54f'; ctx.lineWidth = 2; ctx.stroke();
+        }
+      }
+    }
+
+    // --- GAME PREVIEW LOOP ---
+    function loop() {
+      phase = (phase + 0.035) % (Math.PI * 2);
+      tickCount++;
+
+      // Autonomous Game AI Step
+      if (tickCount % 10 === 0) {
+        let head = snake[0];
+        let target = food;
+        let dx = 0, dy = 0;
+
+        if (head.x < target.x) dx = 1;
+        else if (head.x > target.x) dx = -1;
+        else if (head.y < target.y) dy = 1;
+        else if (head.y > target.y) dy = -1;
+
+        let next = { x: (head.x + dx + COLS) % COLS, y: (head.y + dy + ROWS) % ROWS };
+        snake.unshift(next);
+
+        if (next.x === food.x && next.y === food.y) {
+          food = { x: Math.floor(Math.random() * (COLS - 2)) + 1, y: Math.floor(Math.random() * (ROWS - 2)) + 1 };
+        } else {
+          snake.pop();
+        }
+      }
+
+      ctx.clearRect(0, 0, W, H);
+      drawArena(phase);
+      drawFoods(phase);
+      drawSnake(phase);
+
       requestAnimationFrame(loop);
     }
     loop();
