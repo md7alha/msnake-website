@@ -121,23 +121,23 @@
         <canvas id="gameCanvas" width="360" height="480"></canvas>
         
         <div class="controls-label">Arena Backdrops</div>
-        <div class="tag-row">
-          <button class="arena-btn active" onclick="setArena('VOID')">Void</button>
-          <button class="arena-btn" onclick="setArena('BLACK_HOLE')">Black Hole</button>
-          <button class="arena-btn" onclick="setArena('CYBERCITY')">Cyber City</button>
-          <button class="arena-btn" onclick="setArena('MAGMA')">Magma</button>
-          <button class="arena-btn" onclick="setArena('OCEAN')">Ocean</button>
-          <button class="arena-btn" onclick="setArena('SUNSET')">Sunset</button>
-          <button class="arena-btn" onclick="setArena('MATRIX')">Matrix</button>
+        <div class="tag-row" id="arenaButtons">
+          <button class="arena-btn active" onclick="setArena('VOID', this)">Void</button>
+          <button class="arena-btn" onclick="setArena('BLACK_HOLE', this)">Black Hole</button>
+          <button class="arena-btn" onclick="setArena('CYBERCITY', this)">Cyber City</button>
+          <button class="arena-btn" onclick="setArena('MAGMA', this)">Magma</button>
+          <button class="arena-btn" onclick="setArena('OCEAN', this)">Ocean</button>
+          <button class="arena-btn" onclick="setArena('SUNSET', this)">Sunset</button>
+          <button class="arena-btn" onclick="setArena('MATRIX', this)">Matrix</button>
         </div>
 
         <div class="controls-label">Snake Loadout Styles</div>
-        <div class="tag-row">
-          <button class="arena-btn active" onclick="setStyle('CLASSIC')">Classic</button>
-          <button class="arena-btn" onclick="setStyle('SKELETON')">Skeleton</button>
-          <button class="arena-btn" onclick="setStyle('PLASMA')">Plasma</button>
-          <button class="arena-btn" onclick="setStyle('SINGULARITY')">Singularity</button>
-          <button class="arena-btn" onclick="setStyle('SAMURAI')">Samurai</button>
+        <div class="tag-row" id="styleButtons">
+          <button class="arena-btn active" onclick="setStyle('CLASSIC', this)">Classic</button>
+          <button class="arena-btn" onclick="setStyle('SKELETON', this)">Skeleton</button>
+          <button class="arena-btn" onclick="setStyle('PLASMA', this)">Plasma</button>
+          <button class="arena-btn" onclick="setStyle('SINGULARITY', this)">Singularity</button>
+          <button class="arena-btn" onclick="setStyle('SAMURAI', this)">Samurai</button>
         </div>
       </div>
     </div>
@@ -199,19 +199,29 @@
     let specialFood = {x: 4, y: 6};
     let shrinkFood = {x: 14, y: 18};
 
-    function setArena(t) {
+    function setArena(t, btn) {
       currentTheme = t;
       document.getElementById('labelTheme').innerText = 'ARENA: ' + t;
-      document.querySelectorAll('.controls-label:nth-of-type(1) + .tag-row .arena-btn').forEach(b => {
-        b.classList.toggle('active', b.innerText.toUpperCase().replace(/\s+/g, '_') === t);
-      });
+      document.querySelectorAll('#arenaButtons .arena-btn').forEach(b => b.classList.remove('active'));
+      if (btn) {
+        btn.classList.add('active');
+      } else {
+        document.querySelectorAll('#arenaButtons .arena-btn').forEach(b => {
+          if (b.innerText.toUpperCase().replace(/\s+/g, '_') === t) b.classList.add('active');
+        });
+      }
     }
 
-    function setStyle(s) {
+    function setStyle(s, btn) {
       currentStyle = s;
-      document.querySelectorAll('.controls-label:nth-of-type(2) + .tag-row .arena-btn').forEach(b => {
-        b.classList.toggle('active', b.innerText.toUpperCase() === s);
-      });
+      document.querySelectorAll('#styleButtons .arena-btn').forEach(b => b.classList.remove('active'));
+      if (btn) {
+        btn.classList.add('active');
+      } else {
+        document.querySelectorAll('#styleButtons .arena-btn').forEach(b => {
+          if (b.innerText.toUpperCase() === s) b.classList.add('active');
+        });
+      }
     }
 
     function drawArena(p) {
