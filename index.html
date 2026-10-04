@@ -213,32 +213,14 @@
         </div>
 
         <div class="canvas-container">
-          <canvas id="gameCanvas" width="360" height="480"></canvas>
-          <div class="canvas-scanline"></div>
+          <iframe
+            src="Game.html"
+            title="mSnake Playable Game"
+            style="width:100%; height:100%; display:block; border:0; border-radius:16px;"
+            allow="autoplay">
+          </iframe>
         </div>
-        
-        <!-- ONLY 4 ARENAS ON TOP-RIGHT PREVIEW -->
-        <div class="controls-label">
-          <span>Active Arena Backdrop</span>
-          <span style="color:var(--primary); font-size:0.65rem;">LIVE SIMULATION</span>
-        </div>
-        <div class="tag-row" id="arenaButtons">
-          <button class="arena-btn active" onclick="setArena('VOID', this)">Void</button>
-          <button class="arena-btn" onclick="setArena('CYBERCITY', this)">Cyber City</button>
-          <button class="arena-btn" onclick="setArena('STORM', this)">Storm</button>
-          <button class="arena-btn" onclick="setArena('ABYSS', this)">Abyss</button>
-        </div>
-
-        <!-- ONLY 3 SNAKES ON TOP-RIGHT PREVIEW -->
-        <div class="controls-label">
-          <span>Active Snake Skin</span>
-          <span style="color:var(--cyan); font-size:0.65rem;">INTERACTIVE PREVIEW</span>
-        </div>
-        <div class="tag-row snakes" id="styleButtons">
-          <button class="arena-btn active" onclick="setStyle('CLASSIC', this)">Classic</button>
-          <button class="arena-btn" onclick="setStyle('SKELETON', this)">Skeleton</button>
-          <button class="arena-btn" onclick="setStyle('PLASMA', this)">Plasma</button>
-        </div>
+        <canvas id="gameCanvas" width="360" height="480" style="display:none;"></canvas>
       </div>
     </div>
 
