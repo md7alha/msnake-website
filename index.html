@@ -202,23 +202,42 @@
         </div>
       </div>
       
-      <!-- PLAYABLE GAME DEMO EMBED -->
-      <div class="arena-viewport" style="padding: 10px; display: flex; flex-direction: column;">
-        <div class="arena-header" style="margin-bottom: 8px;">
-          <span>PLAYABLE DEMO</span>
+      <!-- REALISTIC SMOOTH LIVE GAMEPLAY -->
+      <div class="arena-viewport">
+        <div class="arena-header">
+          <span id="labelTheme">ARENA: VOID</span>
           <div class="arena-hud">
-            <span class="hud-badge" style="color:var(--primary)">● SWIPE / ARROWS TO PLAY</span>
+            <span class="hud-badge">SCORE: <b id="hudScore">2,840</b></span>
+            <span class="hud-badge" style="color:var(--primary)">● 60 FPS COMPOSE</span>
           </div>
         </div>
 
-        <div class="canvas-container" style="aspect-ratio: 9 / 14; border: 1.5px solid var(--border-glow);">
-          <iframe 
-            src="game.html" 
-            title="mSnake Playable Demo"
-            style="width: 100%; height: 100%; border: none; display: block; background: #000;"
-            tabindex="0"
-            allow="autoplay">
-          </iframe>
+        <div class="canvas-container">
+          <canvas id="gameCanvas" width="360" height="480"></canvas>
+          <div class="canvas-scanline"></div>
+        </div>
+        
+        <!-- ONLY 4 ARENAS ON TOP-RIGHT PREVIEW -->
+        <div class="controls-label">
+          <span>Active Arena Backdrop</span>
+          <span style="color:var(--primary); font-size:0.65rem;">LIVE SIMULATION</span>
+        </div>
+        <div class="tag-row" id="arenaButtons">
+          <button class="arena-btn active" onclick="setArena('VOID', this)">Void</button>
+          <button class="arena-btn" onclick="setArena('CYBERCITY', this)">Cyber City</button>
+          <button class="arena-btn" onclick="setArena('STORM', this)">Storm</button>
+          <button class="arena-btn" onclick="setArena('ABYSS', this)">Abyss</button>
+        </div>
+
+        <!-- ONLY 3 SNAKES ON TOP-RIGHT PREVIEW -->
+        <div class="controls-label">
+          <span>Active Snake Skin</span>
+          <span style="color:var(--cyan); font-size:0.65rem;">INTERACTIVE PREVIEW</span>
+        </div>
+        <div class="tag-row snakes" id="styleButtons">
+          <button class="arena-btn active" onclick="setStyle('CLASSIC', this)">Classic</button>
+          <button class="arena-btn" onclick="setStyle('SKELETON', this)">Skeleton</button>
+          <button class="arena-btn" onclick="setStyle('PLASMA', this)">Plasma</button>
         </div>
       </div>
     </div>
@@ -347,15 +366,15 @@
     </section>
   </main>
 
-  <footer>
+    <footer>
     <div style="margin-bottom: 16px;">
-      <a href="https://pixelpicked.com/game/2BbOsS5Jfg2/msnake-retro-snake-arcade/" target="_blank" rel="noopener">
-        <img src="https://api.pixelpicked.com/api/badges/2BbOsS5Jfg2/live.png?theme=dark" width="250" height="54" alt="Approved on PixelPicked" />
-      </a>
-    </div>
+      <a href="https://pixelpicked.com/game/2BbOs55Jfg2/msnake-retro-snake-arcade/" target="_blank" rel="noopener">
+<img src="https://api.pixelpicked.com/api/badges/2BbOs55Jfg2/live.png?theme=dark"
+    width="250" height="54" alt="Approved on PixelPicked" />
+</a>
     <p>&copy; 2026 mSnake • Developed by Md7 • <a href="privacypolicy.html">Privacy Policy</a></p>
   </footer>
-
+  
   <script>
     const ALL_19_ARENAS = [
       { id: 'VOID', name: 'Void' },
@@ -379,7 +398,17 @@
       { id: 'BLOOM', name: 'Bloom' }
     ];
 
+    // Main Gameplay Canvas Setup
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const COLS = 18, ROWS = 24;
+    const cellW = W / COLS, cellH = H / ROWS;
+
+    let currentTheme = 'VOID';
+    let currentStyle = 'CLASSIC';
     let phase = 0;
+    let score = 2840;
 
     // Build the 19 Smooth-Cornered Live Mini Preview Cards (Non-clickable)
     const arenaLiveGrid = document.getElementById('arenaLiveGrid');
@@ -406,6 +435,125 @@
 
       cardCanvases.push({ id: arena.id, canvas: c, ctx: c.getContext('2d') });
     });
+
+    function setArena(t, btn) {
+      currentTheme = t;
+      document.getElementById('labelTheme').innerText = 'ARENA: ' + t.replace('_', ' ');
+      document.querySelectorAll('#arenaButtons .arena-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+    }
+
+    function setStyle(s, btn) {
+      currentStyle = s;
+      document.querySelectorAll('#styleButtons .arena-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+    }
+
+    // -------------------------------------------------------------
+    // CALM & SMOOTH SNAKE NAVIGATION (Fluid & Graceful)
+    // -------------------------------------------------------------
+    let snake = [
+      {x: 8, y: 14}, {x: 7, y: 14}, {x: 6, y: 14}, {x: 5, y: 14},
+      {x: 4, y: 14}, {x: 4, y: 15}, {x: 4, y: 16}, {x: 5, y: 16}
+    ];
+    let prevSnake = snake.map(s => ({...s}));
+    let food = {x: 13, y: 8};
+    let specialFood = {x: 4, y: 5};
+    let shrinkFood = {x: 14, y: 19};
+
+    let moveProgress = 0;
+    let lastStepTime = performance.now();
+    const STEP_INTERVAL = 240; // Calm, relaxed tempo (~4.1 steps/sec)
+
+    function updateCalmSnake() {
+      prevSnake = snake.map(s => ({...s}));
+      let head = snake[0];
+
+      // Targets sorted by proximity
+      let targets = [food, specialFood, shrinkFood];
+      let bestTarget = food;
+      let minD = 999;
+      targets.forEach(t => {
+        let d = Math.hypot(t.x - head.x, t.y - head.y);
+        if (d < minD) { minD = d; bestTarget = t; }
+      });
+
+      // Valid candidate directions
+      const dirs = [
+        {x: 0, y: -1}, {x: 1, y: 0}, {x: 0, y: 1}, {x: -1, y: 0}
+      ];
+
+      const neck = snake[1] || head;
+      const curDir = { x: head.x - neck.x, y: head.y - neck.y };
+
+      let candidates = [];
+      dirs.forEach(d => {
+        // Prevent instant 180° neck snap
+        if (d.x === -curDir.x && d.y === -curDir.y) return;
+
+        let nx = head.x + d.x;
+        let ny = head.y + d.y;
+
+        // Keep inside calm boundary (avoid perimeter wall collisions)
+        if (nx < 1 || nx >= COLS - 1 || ny < 1 || ny >= ROWS - 1) return;
+
+        // Avoid self collision
+        let hitSelf = snake.some((seg, idx) => idx < snake.length - 1 && seg.x === nx && seg.y === ny);
+        if (hitSelf) return;
+
+        // Look-ahead flood search for open space
+        let openSpace = 0;
+        dirs.forEach(sd => {
+          let sx = nx + sd.x, sy = ny + sd.y;
+          if (sx >= 1 && sx < COLS - 1 && sy >= 1 && sy < ROWS - 1) {
+            if (!snake.some(s => s.x === sx && s.y === sy)) openSpace++;
+          }
+        });
+
+        let distToTarget = Math.hypot(nx - bestTarget.x, ny - bestTarget.y);
+        let scoreVal = -distToTarget * 2.0 + openSpace * 4.0;
+        candidates.push({ dir: d, nx: nx, ny: ny, score: scoreVal });
+      });
+
+      let chosen = null;
+      if (candidates.length > 0) {
+        candidates.sort((a, b) => b.score - a.score);
+        chosen = candidates[0];
+      } else {
+        // Graceful fallback move
+        for (let d of dirs) {
+          let nx = (head.x + d.x + COLS) % COLS;
+          let ny = (head.y + d.y + ROWS) % ROWS;
+          if (!snake.some(s => s.x === nx && s.y === ny)) {
+            chosen = { nx: nx, ny: ny };
+            break;
+          }
+        }
+      }
+
+      if (!chosen) chosen = { nx: (head.x + 1) % COLS, ny: head.y };
+
+      let nextHead = { x: chosen.nx, y: chosen.ny };
+      snake.unshift(nextHead);
+
+      // Food eating triggers
+      if (nextHead.x === food.x && nextHead.y === food.y) {
+        score += 100;
+        food = { x: Math.floor(Math.random() * (COLS - 4)) + 2, y: Math.floor(Math.random() * (ROWS - 4)) + 2 };
+      } else if (nextHead.x === specialFood.x && nextHead.y === specialFood.y) {
+        score += 300;
+        specialFood = { x: Math.floor(Math.random() * (COLS - 4)) + 2, y: Math.floor(Math.random() * (ROWS - 4)) + 2 };
+      } else if (nextHead.x === shrinkFood.x && nextHead.y === shrinkFood.y) {
+        score += 150;
+        if (snake.length > 6) snake.pop();
+        if (snake.length > 6) snake.pop();
+        shrinkFood = { x: Math.floor(Math.random() * (COLS - 4)) + 2, y: Math.floor(Math.random() * (ROWS - 4)) + 2 };
+      } else {
+        snake.pop();
+      }
+
+      document.getElementById('hudScore').innerText = score.toLocaleString();
+    }
 
     // -------------------------------------------------------------
     // BACKDROP RENDER ENGINE (ALL 19 THEMES)
@@ -665,12 +813,139 @@
     }
 
     // -------------------------------------------------------------
-    // ANIMATION LOOP FOR 19 PREVIEWS
+    // ACCURATE SNAKE SKINS RENDERING (CLASSIC, SKELETON, PLASMA)
     // -------------------------------------------------------------
-    function masterLoop() {
+    function renderSnake(c, centers, rad, styleName, p) {
+      if (!centers || centers.length === 0) return;
+      const head = centers[0];
+      const pi2 = Math.PI * 2;
+
+      if (styleName === 'CLASSIC') {
+        for (let i = centers.length - 1; i >= 0; i--) {
+          const pt = centers[i];
+          c.fillStyle = (i === 0) ? '#39ff14' : '#22aa10';
+          c.beginPath(); c.arc(pt.x, pt.y, rad, 0, pi2); c.fill();
+          c.fillStyle = 'rgba(0,0,0,0.18)'; c.beginPath(); c.arc(pt.x, pt.y, rad * 0.7, 0, pi2); c.fill();
+          if (i === 0) {
+            c.fillStyle = '#fff';
+            c.beginPath(); c.arc(pt.x - rad*0.3, pt.y - rad*0.3, rad*0.24, 0, pi2); c.fill();
+            c.beginPath(); c.arc(pt.x + rad*0.3, pt.y - rad*0.3, rad*0.24, 0, pi2); c.fill();
+            c.fillStyle = '#000';
+            c.beginPath(); c.arc(pt.x - rad*0.3, pt.y - rad*0.3, rad*0.12, 0, pi2); c.fill();
+            c.beginPath(); c.arc(pt.x + rad*0.3, pt.y - rad*0.3, rad*0.12, 0, pi2); c.fill();
+          }
+        }
+      }
+      else if (styleName === 'SKELETON') {
+        const boneWhite = '#faf7ee';
+        for (let i = 1; i < centers.length; i++) {
+          const p0 = centers[i - 1], p1 = centers[i];
+          const dx = p1.x - p0.x, dy = p1.y - p0.y;
+          const d = Math.hypot(dx, dy) || 1;
+          const nx = -dy / d, ny = dx / d;
+
+          c.strokeStyle = boneWhite; c.lineWidth = 1.6; c.lineCap = 'round';
+          c.beginPath();
+          c.moveTo(p1.x, p1.y); c.lineTo(p1.x + nx * rad * 0.9, p1.y + ny * rad * 0.9);
+          c.moveTo(p1.x, p1.y); c.lineTo(p1.x - nx * rad * 0.9, p1.y - ny * rad * 0.9);
+          c.stroke();
+          c.fillStyle = boneWhite; c.beginPath(); c.arc(p1.x, p1.y, rad * 0.2, 0, pi2); c.fill();
+        }
+
+        c.strokeStyle = boneWhite; c.lineWidth = rad * 0.25;
+        c.beginPath();
+        centers.forEach((pt, i) => { if (i === 0) c.moveTo(pt.x, pt.y); else c.lineTo(pt.x, pt.y); });
+        c.stroke();
+
+        c.fillStyle = boneWhite;
+        c.beginPath(); c.roundRect(head.x - rad*0.75, head.y - rad, rad*1.5, rad*1.8, 6); c.fill();
+        c.fillStyle = '#14120e';
+        c.beginPath(); c.arc(head.x - rad*0.32, head.y - rad*0.2, rad*0.22, 0, pi2); c.fill();
+        c.beginPath(); c.arc(head.x + rad*0.32, head.y - rad*0.2, rad*0.22, 0, pi2); c.fill();
+      }
+      else if (styleName === 'PLASMA') {
+        c.strokeStyle = '#00f5ff'; c.lineWidth = 2.5;
+        for (let i = 0; i < centers.length - 1; i++) {
+          const p1 = centers[i], p2 = centers[i+1];
+          const midX = (p1.x + p2.x)*0.5 + (Math.random() - 0.5) * rad * 0.6;
+          const midY = (p1.y + p2.y)*0.5 + (Math.random() - 0.5) * rad * 0.6;
+          c.beginPath(); c.moveTo(p1.x, p1.y); c.lineTo(midX, midY); c.lineTo(p2.x, p2.y); c.stroke();
+        }
+        for (let i = centers.length - 1; i >= 0; i--) {
+          const pt = centers[i];
+          c.fillStyle = 'rgba(0, 245, 255, 0.25)'; c.beginPath(); c.arc(pt.x, pt.y, rad * 1.4, 0, pi2); c.fill();
+          c.fillStyle = (i % 2 === 0) ? '#00f5ff' : '#ff007f'; c.beginPath(); c.arc(pt.x, pt.y, rad * 0.85, 0, pi2); c.fill();
+          c.fillStyle = '#fff'; c.beginPath(); c.arc(pt.x, pt.y, rad * 0.3, 0, pi2); c.fill();
+        }
+      }
+    }
+
+    // -------------------------------------------------------------
+    // ACCURATE POWER FOODS RENDERING
+    // -------------------------------------------------------------
+    function renderFoods(c, p, currentTheme) {
+      const pulse = 1.0 + 0.08 * Math.sin(p * 4);
+
+      // 1. Standard Food Pellet
+      const fx = (food.x + 0.5) * cellW, fy = (food.y + 0.5) * cellH;
+      const fRad = Math.min(cellW, cellH) * 0.32 * pulse;
+      c.fillStyle = 'rgba(255, 23, 68, 0.25)'; c.beginPath(); c.arc(fx, fy, fRad * 2.2, 0, Math.PI * 2); c.fill();
+      c.fillStyle = '#ff1744'; c.beginPath(); c.arc(fx, fy, fRad, 0, Math.PI * 2); c.fill();
+      c.fillStyle = '#ffffff'; c.beginPath(); c.arc(fx - fRad * 0.3, fy - fRad * 0.3, fRad * 0.28, 0, Math.PI * 2); c.fill();
+
+      // 2. Magenta Diamond Bonus Food
+      const sx = (specialFood.x + 0.5) * cellW, sy = (specialFood.y + 0.5) * cellH;
+      const sRad = Math.min(cellW, cellH) * 0.38 * pulse;
+      c.fillStyle = 'rgba(255, 0, 255, 0.25)'; c.beginPath(); c.arc(sx, sy, sRad * 2.2, 0, Math.PI * 2); c.fill();
+      c.fillStyle = '#ff00ff';
+      c.beginPath();
+      c.moveTo(sx, sy - sRad); c.lineTo(sx + sRad, sy); c.lineTo(sx, sy + sRad); c.lineTo(sx - sRad, sy);
+      c.closePath(); c.fill();
+      c.fillStyle = '#ffffff'; c.beginPath(); c.arc(sx, sy, sRad * 0.3, 0, Math.PI * 2); c.fill();
+
+      // 3. Cyan Shrink Pill
+      const shx = (shrinkFood.x + 0.5) * cellW, shy = (shrinkFood.y + 0.5) * cellH;
+      const shRad = Math.min(cellW, cellH) * 0.34 * pulse;
+      c.fillStyle = 'rgba(0, 229, 255, 0.25)'; c.beginPath(); c.arc(shx, shy, shRad * 2.2, 0, Math.PI * 2); c.fill();
+      c.fillStyle = '#00e5ff'; c.beginPath(); c.arc(shx, shy, shRad, 0, Math.PI * 2); c.fill();
+      c.strokeStyle = '#ffffff'; c.lineWidth = 2; c.lineCap = 'round';
+      c.beginPath(); c.moveTo(shx - shRad * 0.4, shy); c.lineTo(shx + shRad * 0.4, shy); c.stroke();
+    }
+
+    // -------------------------------------------------------------
+    // MAIN 60 FPS ANIMATION LOOP
+    // -------------------------------------------------------------
+    let lastFrameTime = performance.now();
+
+    function masterLoop(now) {
+      const dt = now - lastFrameTime;
+      lastFrameTime = now;
       phase = (phase + 0.035) % (Math.PI * 2);
 
-      // Render All 19 Live Mini Preview Cards
+      // Step accumulator
+      if (now - lastStepTime >= STEP_INTERVAL) {
+        updateCalmSnake();
+        lastStepTime = now;
+      }
+      moveProgress = (now - lastStepTime) / STEP_INTERVAL;
+      // Smooth sinusoidal interpolation
+      const smoothT = 0.5 - 0.5 * Math.cos(moveProgress * Math.PI);
+
+      // Subpixel smooth segment coordinates
+      const interpCenters = snake.map((seg, i) => {
+        const prev = prevSnake[i] || seg;
+        const curX = (prev.x + (seg.x - prev.x) * smoothT + 0.5) * cellW;
+        const curY = (prev.y + (seg.y - prev.y) * smoothT + 0.5) * cellH;
+        return { x: curX, y: curY };
+      });
+
+      // 1. Render Main Gameplay Canvas
+      ctx.clearRect(0, 0, W, H);
+      renderBackdrop(ctx, W, H, currentTheme, phase, interpCenters[0]);
+      renderFoods(ctx, phase, currentTheme);
+      renderSnake(ctx, interpCenters, cellW * 0.44, currentStyle, phase);
+
+      // 2. Render All 19 Live Mini Preview Cards
       cardCanvases.forEach(item => {
         item.ctx.clearRect(0, 0, item.canvas.width, item.canvas.height);
         renderBackdrop(item.ctx, item.canvas.width, item.canvas.height, item.id, phase, { x: item.canvas.width * 0.5, y: item.canvas.height * 0.5 });
